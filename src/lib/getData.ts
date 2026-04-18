@@ -1,4 +1,4 @@
-const API_KEY = import.meta.env.API_KEY;
+const API_KEY = "403829fffc80d8184aa974d631a475c5";
 
 export const getPopularData = async (type: string, page?: number) => {
   const res = await fetch(
