@@ -1,43 +1,83 @@
-# Astro Starter Kit: Minimal
+# Astro + Cloudflare Movie App
 
-```sh
-pnpm create astro@latest -- --template minimal
+This is a simple movie app built with Astro and Cloudflare Pages. It uses the TMDB API to fetch movie and TV show details, cast, videos, crews, and more. The app is deployed on Cloudflare Pages and uses Cloudflare Workers to fetch data from the TMDB API.
+
+## Features
+
+- Fetch movie and TV show details, cast, videos, crews, and more from the TMDB API.
+- Display movie and TV show details, cast, videos, crews, and more on the app.
+- Search for movies and TV shows using the search bar.
+- Display movie and TV show recommendations based on the user's search query.
+- Display movie and TV show now playing on the app.
+- Display movie and TV show trending on the app.
+- Display movie and TV show popular on the app.
+
+## Getting Started
+
+To get started, follow these steps:
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/alfathmuqoddas/astro-cloudflare-movie-app.git
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+2. Navigate to the project directory:
 
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+```bash
+cd astro-cloudflare-movie-app
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+3. Install the dependencies:
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+```bash
+npm install
+```
 
-Any static assets, like images, can be placed in the `public/` directory.
+4. Start the development server:
 
-## 🧞 Commands
+```bash
+npm run dev
+```
 
-All commands are run from the root of the project, from a terminal:
+5. Open your browser and navigate to `http://localhost:4321`.
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
+## Deployment
 
-## 👀 Want to learn more?
+To deploy the app, follow these steps:
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+1. Install the `wrangler` CLI:
+
+```bash
+npm install -g wrangler
+```
+
+2. Login to your Cloudflare account:
+
+```bash
+wrangler login
+```
+
+3. Configure your Cloudflare account:
+
+```bash
+wrangler config
+```
+
+4. Set the `account_id` and `zone_id` in the `wrangler.toml` file.
+
+5. Build the project:
+
+```bash
+npm run build
+```
+
+6. Deploy the project:
+
+```bash
+wrangler publish
+```
+
+## License
+
+This project is licensed under the MIT License.
