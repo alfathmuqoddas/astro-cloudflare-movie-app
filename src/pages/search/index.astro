@@ -1,0 +1,14 @@
+---
+import AppLayout from "@/layout/AppLayout.astro";
+import MainLayout from "@/layout/MainLayout.astro";
+
+const { searchParams } = Astro.url;
+const query = searchParams.get("query") || "";
+
+---
+<AppLayout>
+    <title slot="head">Search Results for {query}</title>
+    <MainLayout>
+        <h1 class="text-3xl font-bold">Search Results for {query}</h1>
+    </MainLayout>
+</AppLayout>

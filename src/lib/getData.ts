@@ -13,11 +13,17 @@ export const getPopularData = async (type: string, page?: number) => {
   return results;
 };
 
-export const getTrendingData = async (timeframe: string, page?: number) => {
+export const getTrendingData = async ({
+  timeframe,
+  type,
+}: {
+  timeframe: "day" | "week";
+  type: "movie" | "tv" | "person";
+}) => {
   const res = await fetch(
-    `https://api.themoviedb.org/3/trending/all/${timeframe}?api_key=${
+    `https://api.themoviedb.org/3/trending/${type}/${timeframe}?api_key=${
       API_KEY
-    }&language=en-US&page=${page || 1}`,
+    }&language=en-US&page=1`,
   );
   if (!res.ok) {
     throw new Error("Failed to fetch trending data");
@@ -26,11 +32,9 @@ export const getTrendingData = async (timeframe: string, page?: number) => {
   return results;
 };
 
-export const getNowPlayingData = async (page?: number) => {
+export const getNowPlayingData = async () => {
   const res = await fetch(
-    `https://api.themoviedb.org/3/movie/now_playing?api_key=${
-      API_KEY
-    }&page=${page || 1}`,
+    `https://api.themoviedb.org/3/movie/now_playing?api_key=${API_KEY}&page=1`,
   );
   if (!res.ok) {
     throw new Error("Failed to fetch Now playing data");
@@ -89,8 +93,8 @@ export const getVideosData = async (type: string, id: string) => {
   if (!videos.ok) {
     throw new Error("Failed to fetch videos data");
   }
-  const vid = await videos.json();
-  return vid;
+  const { results } = await videos.json();
+  return results;
 };
 
 export const getSimilarData = async (type: string, id: string) => {
@@ -100,8 +104,8 @@ export const getSimilarData = async (type: string, id: string) => {
   if (!similar.ok) {
     throw new Error("Failed to fetch similar data");
   }
-  const similarDataRes = await similar.json();
-  return similarDataRes;
+  const { results } = await similar.json();
+  return results;
 };
 
 export const getCelebData = async (id: string, type: string) => {
