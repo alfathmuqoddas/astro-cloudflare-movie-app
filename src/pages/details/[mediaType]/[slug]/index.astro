@@ -69,6 +69,7 @@ const importantCrews = credit?.crew?.filter((crew: any) => crew.job === "Directo
 ---
 <AppLayout>
     <title slot="head">{mediaDetails.title || mediaDetails.name} | Alfath Muqoddas MovieApp</title>
+    <meta name="description" content={mediaDetails.overview + " " + "Alfath Muqoddas | MovieApp"} slot="head"/>
     <!-- opengraph meta -->
     <meta property="og:title" content={mediaDetails.title || mediaDetails.name + " | Alfath Muqoddas | MovieApp"} slot="head" />
     <meta property="og:type" content="article" slot="head" />
@@ -87,7 +88,7 @@ const importantCrews = credit?.crew?.filter((crew: any) => crew.job === "Directo
         <section>
             <figure class="h-120 relative overflow-hidden">
                 <img 
-                    src={imagesUrl + "w1280" + mediaDetails.backdrop_path} 
+                    src={mediaDetails.backdrop_path ? imagesUrl + "w1280" + mediaDetails.backdrop_path : "https://placehold.co/1280x720?text=No+Data"}
                     alt={mediaDetails.title || mediaDetails.name}
                     class="w-full h-full object-cover"
                     width="1280"
@@ -119,6 +120,11 @@ const importantCrews = credit?.crew?.filter((crew: any) => crew.job === "Directo
                                 <span class="text-sm text-white px-3 py-1 rounded-full bg-zinc-600/60">
                                     ⏰ {convertMinutesToHM(mediaDetails.runtime)}
                                 </span>)}
+                                {mediaType === "tv" && (
+                                    <span class="text-sm text-white px-3 py-1 rounded-full bg-blue-500/60">
+                                        {mediaDetails.number_of_seasons} Seasons
+                                    </span>
+                                )}
                             </div>
                             
                         </div>
@@ -229,8 +235,8 @@ const importantCrews = credit?.crew?.filter((crew: any) => crew.job === "Directo
 			{
 				error.similar ? <>Error fetching similar movies</> : similar.map((media: any) => (
 					<a href={"/details/" + mediaType + "/" + slugify(media.title || media.name) + "-" + media.id} class="group">
-						<figure class="w-28 md:w-32">
-							<img width="92" height="auto" src={imagesUrl + "w185" + media.poster_path} alt={media.title || media.name} class="w-full h-full object-cover" />
+						<figure class="w-28 md:w-32 rounded-lg overflow-hidden">
+							<img width="92" height="auto" src={media.poster_path ? imagesUrl + "w185" + media.poster_path : "https://placehold.co/185x274?text=No+Data"} alt={media.title || media.name} class="w-full h-full object-cover" />
 						</figure>
 						<div class="text-center mt-2">
 						<h3 class="font-bold text-sm group-hover:underline group-hover:underline-offset-2">{media.title || media.name}</h3>

@@ -119,11 +119,21 @@ export const getCelebData = async (id: string, type: string) => {
   return data;
 };
 
-export const queryData = async (searchType: string, query: string) => {
-  const url = `https://api.themoviedb.org/3/search/${searchType}?api_key=${API_KEY}&query=${query}`;
+export const searchByQuery = async ({
+  mediaType,
+  query,
+}: {
+  mediaType: "movie" | "tv";
+  query: string;
+}) => {
+  const url = `https://api.themoviedb.org/3/search/${mediaType}?api_key=${API_KEY}&query=${query}`;
   const response = await fetch(url);
-  const data = await response.json();
-  return data;
+  if (!response.ok) {
+    throw new Error("Failed to fetch search data");
+  }
+  const { results } = await response.json();
+
+  return results;
 };
 
 export const getDiscover = async (
