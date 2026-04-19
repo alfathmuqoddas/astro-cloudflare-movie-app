@@ -78,6 +78,20 @@ npm run build
 wrangler publish
 ```
 
+## Screenshots
+
+- Home Page
+  ![Home Page](./screenshots/homepage.png)
+
+- Movie Details
+  ![Movie Details](./screenshots/movie-details.png)
+
+- TV Show Details
+  ![TV Show Details](./screenshots/tv-show-details.png)
+
+- Search Page
+  ![Search Page](./screenshots/search-page.png)
+
 ## License
 
 This project is licensed under the MIT License.
