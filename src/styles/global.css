@@ -10,7 +10,7 @@
 
 @layer base {
   body {
-    @apply bg-[#FAF9F6];
+    @apply bg-amber-50;
   }
 
   h1,

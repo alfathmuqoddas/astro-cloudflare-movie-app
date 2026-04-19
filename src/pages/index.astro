@@ -81,7 +81,7 @@ if (npMoviesResult.status === "fulfilled") {
 		<article class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 mt-2 border-t border-l">
 			{
 				errors.tv ? <>Error fetching trending tv shows</> : trendingTv.map((tv: any, index: number) => (
-					<a href={"/details/tv/" + slugify(tv.name) + "-" + tv.id} class="p-2 border-b border-r border-black group flex items-center gap-2">
+					<a href={"/details/tv/" + slugify(tv.name) + "-" + tv.id} class="p-2 bg-white shadow-[3px_3px_0px_rgba(0,0,0,1)] border-b border-r border-black group flex items-center gap-2">
 						<figure class="basis-1/6 md:basis-1/4 grow-0">
 							<img width="92" height="auto" src={imagesUrl + "w92" + tv.poster_path} alt={tv.name} class="w-full h-full object-cover" />
 						</figure>
@@ -98,15 +98,15 @@ if (npMoviesResult.status === "fulfilled") {
 
 	<section>
 		<h1 class="text-xl md:text-3xl font-bold pl-6 md:pl-0">Now Playing</h1>
-		<article class="max-w-6xl overflow-auto flex gap-2 py-2 px-6 md:px-0">
+		<article class="max-w-6xl overflow-auto flex gap-3 py-2 px-6 md:px-0">
 			{
 				errors.npMovies ? <>Error fetching now playing movies</> : nowPlayingMovies.map((movie: any) => (
-					<a href={"/details/movie/" + slugify(movie.title) + "-" + movie.id} class="group">
-						<figure class="w-28 md:w-32">
+					<a href={"/details/movie/" + slugify(movie.title) + "-" + movie.id} title={movie.title} class="group outline shadow-[3px_3px_0px_rgba(0,0,0,1)] bg-white">
+						<figure class="w-32">
 							<img width="92" height="auto" src={imagesUrl + "w185" + movie.poster_path} alt={movie.title} class="w-full h-full object-cover" />
 						</figure>
-						<div class="text-center mt-2">
-						<h3 class="font-bold text-sm group-hover:underline group-hover:underline-offset-2">{movie.title}</h3>
+						<div class="text-center p-2">
+						<h3 class="font-bold text-sm group-hover:underline group-hover:underline-offset-2 line-clamp-3">{movie.title}</h3>
 						<p class="text-xs">{movie.release_date.slice(0,4)}</p>
 						</div>
 					</a>

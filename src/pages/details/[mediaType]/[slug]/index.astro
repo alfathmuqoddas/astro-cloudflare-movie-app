@@ -83,7 +83,7 @@ const importantCrews = credit?.crew?.filter((crew: any) => crew.job === "Directo
     <meta name="twitter:image" content={imagesUrl + "w300" + mediaDetails.poster_path} slot="head"/>
     <meta name="twitter:url" content={Astro.url.href} slot="head"/>
     <MainLayout>
-        <section class="flex flex-col gap-6 md:gap-8">
+        <section class="flex flex-col gap-8">
 
         <section>
             <figure class="h-120 relative overflow-hidden">
@@ -110,23 +110,33 @@ const importantCrews = credit?.crew?.filter((crew: any) => crew.job === "Directo
                                 {mediaDetails.title || mediaDetails.name}
                             </h1>
                             <div class="flex gap-2 items-center flex-wrap">
-                                <span class="text-sm text-white rounded-full px-3 py-1 bg-zinc-600/60">
+                                <span class="text-sm text-white rounded-full px-3 py-1 bg-zinc-500">
                                     📅 {formatDateToMonthYear(mediaDetails.release_date || mediaDetails.first_air_date)}
                                 </span>
-                                <span class={`${mediaDetails.vote_average < 6 ? "bg-red-500/60 text-white" : mediaDetails.vote_average >= 6 && mediaDetails.vote_average <= 7 ? "bg-amber-200/90" : "bg-green-500/70 text-white"} text-sm rounded-full px-3 py-1`}>
-                                    ★ {mediaDetails.vote_average.toFixed(1)}
+                                <span class={`flex items-center gap-1 text-sm px-3 py-1 rounded-full
+                                    ${mediaDetails.vote_average < 6 
+                                        ? "bg-red-400 text-black" 
+                                        : mediaDetails.vote_average < 7.5 
+                                            ? "bg-yellow-300 text-black" 
+                                            : mediaDetails.vote_average < 8.5 
+                                                ? "bg-green-300 text-black" 
+                                                : "bg-green-600 text-white"
+                                    }
+                                `}>
+                                    <span class="text-base">★</span> 
+                                    {mediaDetails.vote_average.toFixed(1)}
                                 </span>
                                 {mediaType === "movie" && (
-                                <span class="text-sm text-white px-3 py-1 rounded-full bg-zinc-600/60">
+                                <span class="text-sm text-black px-3 py-1 rounded-full bg-blue-300">
                                     ⏰ {convertMinutesToHM(mediaDetails.runtime)}
                                 </span>)}
                                 {mediaType === "tv" && (
-                                    <span class="text-sm text-white px-3 py-1 rounded-full bg-blue-500/60">
+                                    <span class="text-sm text-black px-3 py-1 rounded-full bg-blue-300">
                                         {mediaDetails.number_of_seasons} Seasons
                                     </span>
                                 )}
                                 {mediaType === "tv" && (
-                                    <a href={"/ratings/" + slugify(mediaDetails.name) + "-" + mediaDetails.external_ids.imdb_id} class="text-sm text-white px-3 py-1 rounded-full bg-blue-500/60">
+                                    <a href={"/ratings/" + slugify(mediaDetails.name) + "-" + mediaDetails.external_ids.imdb_id} class="text-sm text-black px-3 py-1 rounded-full bg-blue-300">
                                         See All Episodes Ratings
                                     </a>
                                 )}
@@ -146,12 +156,12 @@ const importantCrews = credit?.crew?.filter((crew: any) => crew.job === "Directo
             {error.credit ? <>Error fetching cast data</> : (
             <div class="max-w-6xl overflow-auto flex gap-2 py-2 px-6 md:px-0">
                 {
-                    credit.cast.map((cast: any) => (
-                        <div class="w-24 flex flex-col gap-2">
-                            <figure class="w-24 h-24 rounded-full overflow-hidden">
-                                <img loading="lazy" src={cast.profile_path ? imagesUrl + "w185" + cast.profile_path : "https://placehold.co/96x96?text=No+Data"} class="w-full h-full object-cover" width="185" height="auto" />
+                    credit.cast.slice(0,10).map((cast: any) => (
+                        <div class="w-28 flex flex-col outline shadow-[2px_2px_0px_rgba(0,0,0,1)] bg-white">
+                            <figure class="w-28">
+                                <img loading="lazy" src={cast.profile_path ? imagesUrl + "w185" + cast.profile_path : "https://placehold.co/96x96?text=No+Data"} class="w-full aspect-square object-cover" width="185" height="auto" />
                             </figure>
-                            <div class="">
+                            <div class="p-2">
                                 <h3 class="font-bold text-sm group-hover:underline group-hover:underline-offset-2">{cast.name}</h3>
                                 <p class="text-xs">{cast.character}</p>
                             </div>
@@ -166,11 +176,11 @@ const importantCrews = credit?.crew?.filter((crew: any) => crew.job === "Directo
             <div class="max-w-6xl overflow-auto flex gap-2 py-2 px-6 md:px-0">
                 {
                     importantCrews.map((cast: any) => (
-                        <div class="w-24 flex flex-col gap-2">
-                            <figure class="w-24 h-24 rounded-full overflow-hidden">
-                                <img loading="lazy" src={cast.profile_path ? imagesUrl + "w185" + cast.profile_path : "https://placehold.co/96x96?text=No+Data"} class="w-full h-full object-cover" width="185" height="auto" />
+                        <div class="w-28 flex flex-col outline shadow-[2px_2px_0px_rgba(0,0,0,1)] bg-white">
+                            <figure class="w-28">
+                                <img loading="lazy" src={cast.profile_path ? imagesUrl + "w185" + cast.profile_path : "https://placehold.co/96x96?text=No+Data"} class="w-full aspect-square object-cover" width="185" height="auto" />
                             </figure>
-                            <div class="">
+                            <div class="p-2">
                                 <h3 class="font-bold text-sm group-hover:underline group-hover:underline-offset-2">{cast.name}</h3>
                                 <p class="text-xs">{cast.job}</p>
                             </div>
@@ -185,8 +195,8 @@ const importantCrews = credit?.crew?.filter((crew: any) => crew.job === "Directo
             <div class="max-w-6xl overflow-auto flex gap-2 py-2 px-6 md:px-0">
                 {
                     videos.map((video: any) => (
-                        <a class="flex flex-col gap-2 group cursor-pointer" href={"https://youtube.com/watch?v=" + video.key}>
-                            <figure class="relative w-48 aspect-video flex items-center justify-center overflow-hidden rounded-lg">
+                        <a class="flex flex-col group cursor-pointer" href={"https://youtube.com/watch?v=" + video.key}>
+                            <figure class="relative w-48 aspect-video flex items-center justify-center">
                                 <img 
                                     loading="lazy" 
                                     src={`https://img.youtube.com/vi/${video.key}/sddefault.jpg`} 
@@ -199,7 +209,7 @@ const importantCrews = credit?.crew?.filter((crew: any) => crew.job === "Directo
                                 </span>
                             </figure>
                             
-                            <div class="w-48">
+                            <div class="p-2">
                                 <p class="font-bold text-sm group-hover:underline group-hover:underline-offset-2 line-clamp-2">
                                     {video.name}
                                 </p>
@@ -216,7 +226,7 @@ const importantCrews = credit?.crew?.filter((crew: any) => crew.job === "Directo
                 {
                     pics?.posters?.map((pic: any) => (
                         <a class="flex flex-col gap-2 group cursor-pointer" href={imagesUrl + "w185" + pic.file_path}>
-                            <figure class="w-32 overflow-hidden rounded-lg">
+                            <figure class="w-32">
                                 <img 
                                     loading="lazy" 
                                     src={imagesUrl + "w185" + pic.file_path} 
@@ -225,8 +235,6 @@ const importantCrews = credit?.crew?.filter((crew: any) => crew.job === "Directo
                                     width="185"
                                     height="auto"
                                 />
-                                
-                                
                             </figure>
                         </a>
                     ))
@@ -236,15 +244,15 @@ const importantCrews = credit?.crew?.filter((crew: any) => crew.job === "Directo
 
         <section>
 		<h1 class="text-2xl font-black max-md:mx-6">Similar {mediaType === "movie" ? "Movies" : "TV Shows"}</h1>
-		<article class="max-w-6xl overflow-auto flex gap-2 py-2 px-6 md:px-0">
+		<article class="max-w-6xl overflow-auto flex gap-3 py-2 px-6 md:px-0">
 			{
 				error.similar ? <>Error fetching similar movies</> : similar.map((media: any) => (
-					<a href={"/details/" + mediaType + "/" + slugify(media.title || media.name) + "-" + media.id} class="group">
-						<figure class="w-28 md:w-32 rounded-lg overflow-hidden">
-							<img width="92" height="auto" src={media.poster_path ? imagesUrl + "w185" + media.poster_path : "https://placehold.co/185x274?text=No+Data"} alt={media.title || media.name} class="w-full h-full object-cover" />
+					<a href={"/details/" + mediaType + "/" + slugify(media.title || media.name) + "-" + media.id} title={media.title || media.name} class="group shadow-[3px_3px_0px_rgba(0,0,0,1)] bg-white outline">
+						<figure class="w-32">
+							<img width="92" height="auto" src={media.poster_path ? imagesUrl + "w185" + media.poster_path : "https://placehold.co/185x274?text=No+Data"} alt={media.title || media.name} class="w-full h-auto object-cover" />
 						</figure>
-						<div class="text-center mt-2">
-						<h3 class="font-bold text-sm group-hover:underline group-hover:underline-offset-2">{media.title || media.name}</h3>
+						<div class="text-center p-2">
+						<h3 class="font-bold text-sm group-hover:underline group-hover:underline-offset-2 line-clamp-3">{media.title || media.name}</h3>
 						<p class="text-xs">{media?.release_date ? media.release_date.slice(0,4) : media.first_air_date.slice(0, 4)}</p>
 						</div>
 					</a>
