@@ -1,0 +1,84 @@
+---
+import AppLayout from "@/layout/AppLayout.astro";
+import MainLayout from "@/layout/MainLayout.astro";
+import { getAllEpisodes, getMediaDetailsByIMDBID } from "@/lib/getData";
+import {extractSlug} from "@/lib/helper";
+
+const { slug } = Astro.params;
+
+if (!slug) {
+  return Astro.redirect('/404');
+}
+
+const id = extractSlug(slug);
+
+let episodes = [];
+let mediaDetails = {};
+let error = { episodes: null, mediaDetails: null };
+
+const [mediaDetailsResult, episodesResult] = await Promise.allSettled([
+    getMediaDetailsByIMDBID(id),
+    getAllEpisodes(id),
+]);
+
+if (episodesResult.status === "fulfilled") {
+    episodes = episodesResult.value;
+} else {
+    error.episodes = episodesResult.reason.message;
+}
+
+if (mediaDetailsResult.status === "fulfilled") {
+    mediaDetails = mediaDetailsResult.value;
+} else {
+    error.mediaDetails = mediaDetailsResult.reason.message;
+}
+
+const episodeMap = new Map(
+  episodes?.map((ep: any) => [`${ep.season}-${ep.episodeNumber}`, ep])
+);
+
+const maxSeason = Math.max(...episodes.map((e: any) => parseInt(e.season)));
+const maxEpisode = Math.max(...episodes.map((e: any) => e.episodeNumber));
+
+const seasonsHeader = Array.from({ length: maxSeason }, (_, i) => i + 1);
+const episodeRows = Array.from({ length: maxEpisode }, (_, i) => i + 1);
+
+const getEp = (s: number, e: number):any => episodeMap.get(`${s}-${e}`);
+
+  const getRatingColor = (rating: number | undefined) => {
+  if (!rating) return 'bg-zinc-500 text-white';
+  if (rating >= 8.5) return 'bg-green-600 text-white';
+  if (rating >= 7.5) return 'bg-green-400 text-zinc-900';
+  if (rating >= 6.5) return 'bg-yellow-400 text-zinc-900';
+  return 'bg-red-500 text-white';
+};
+
+console.log({maxSeason, maxEpisode, seasonsHeader, episodeRows});
+
+---
+<AppLayout>
+    <title slot="head">{id} Ratings | Alfath Muqoddas MovieApp</title>
+    <MainLayout>
+        <!-- <pre>{JSON.stringify(mediaDetails, null, 2)}</pre> -->
+        <section class="mt-6">
+            <h1 class="text-2xl font-black">Episodes Ratings</h1>
+            
+            <div class={`flex gap-2 max-w-6xl overflow-auto`}>
+                {
+                    seasonsHeader.map((s: number) => (
+                        <div class="flex flex-col gap-2">
+                            {
+                                episodeRows.map((e: number) => (
+                                    <div class={`flex justify-center items-center w-8 h-8 ${getRatingColor(getEp(s, e)?.rating?.aggregateRating)}`}>
+                                        <span class="text-sm">{getEp(s, e)?.rating?.aggregateRating || "-"}</span>
+                                    </div>
+                                ))
+                            }
+                        </div>
+                    ))
+                }
+            </div>
+
+        </section>
+    </MainLayout>
+</AppLayout>

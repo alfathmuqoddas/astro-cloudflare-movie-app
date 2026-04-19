@@ -125,6 +125,11 @@ const importantCrews = credit?.crew?.filter((crew: any) => crew.job === "Directo
                                         {mediaDetails.number_of_seasons} Seasons
                                     </span>
                                 )}
+                                {mediaType === "tv" && (
+                                    <a href={"/ratings/" + slugify(mediaDetails.name) + "-" + mediaDetails.external_ids.imdb_id} class="text-sm text-white px-3 py-1 rounded-full bg-blue-500/60">
+                                        See All Episodes Ratings
+                                    </a>
+                                )}
                             </div>
                             
                         </div>

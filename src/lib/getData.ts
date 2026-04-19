@@ -58,7 +58,7 @@ export const getTopRatedData = async (page?: string) => {
 
 export const getMediaDetails = async (type: string, id: string) => {
   const res = await fetch(
-    `https://api.themoviedb.org/3/${type}/${id}?api_key=${API_KEY}&language=en-US`,
+    `https://api.themoviedb.org/3/${type}/${id}?api_key=${API_KEY}&language=en-US&append_to_response=external_ids`,
   );
   if (!res.ok) {
     throw new Error("Failed to fetch details data");
@@ -164,4 +164,22 @@ export const getGenres = async (mediaType: "tv" | "movie") => {
   const genres = await res.json();
 
   return genres;
+};
+
+export const getAllEpisodes = async (id: string) => {
+  const res = await fetch(`https://api.imdbapi.dev/titles/${id}/episodes`);
+  if (!res.ok) {
+    throw new Error("Failed to fetch episodes data");
+  }
+  const { episodes } = await res.json();
+  return episodes;
+};
+
+export const getMediaDetailsByIMDBID = async (id: string) => {
+  const res = await fetch(`https://api.imdbapi.dev/titles/${id}`);
+  if (!res.ok) {
+    throw new Error("Failed to fetch details data");
+  }
+  const mediaDetails = await res.json();
+  return mediaDetails;
 };
