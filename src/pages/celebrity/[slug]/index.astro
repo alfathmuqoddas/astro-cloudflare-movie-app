@@ -2,7 +2,7 @@
 import AppLayout from "@/layout/AppLayout.astro";
 import MainLayout from "@/layout/MainLayout.astro";
 import { getCelebDetails, getCelebCombinedCredits } from "@/lib/getData";
-import {extractSlug, slugify} from "@/lib/helper";
+import {extractSlug, slugify, formatDateToReadable} from "@/lib/helper";
 import {imagesUrl} from "@/lib/constant";
 
 const { slug } = Astro.params;
@@ -38,11 +38,11 @@ const tvCredits = celebCombinedCredits?.filter((credit: any) => credit.media_typ
 const movieCredits = celebCombinedCredits?.filter((credit: any) => credit.media_type === "movie").sort((a: any, b: any) => a.release_date.slice(0,4) - b.release_date.slice(0,4));
 const deathOrAge = ({birthday, deathday}: { birthday: string, deathday: string | null }) => {
     if (deathday) {
-        return "🪦 " + new Date(deathday).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        return `🪦 ${formatDateToReadable(deathday)}`;
     } else {
         //calculate age from birthday
         const age = new Date().getFullYear() - new Date(birthday).getFullYear();
-        return "🪪 " + age + " y/o";
+        return `🪪 ${age} y/o`;
     }
 }
 ---
@@ -59,7 +59,7 @@ const deathOrAge = ({birthday, deathday}: { birthday: string, deathday: string |
 						</figure>
 						<div class="basis-3/4 grow-0">
 						<h3 class="font-bold text-xl group-hover:underline group-hover:underline-offset-2 mb-2">{celebDetails.name}</h3>
-                        <p>🎂 {new Date(celebDetails.birthday).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                        <p>🎂 {formatDateToReadable(celebDetails.birthday)}</p>
 						<p>{deathOrAge({birthday: celebDetails.birthday, deathday: celebDetails.deathday})}</p>
                         <p>🏠 {celebDetails.place_of_birth}</p>
 						</div>

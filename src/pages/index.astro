@@ -5,6 +5,7 @@ import { getTrendingData, getNowPlayingData } from "@/lib/getData";
 import {imagesUrl} from "@/lib/constant";
 import type { TTrendingMovies, TTrendingTv } from "@/types";
 import {slugify} from "@/lib/helper";
+import { url } from "astro:schema";
 
 let trendingMovies: TTrendingMovies[] = [];
 let trendingTv: TTrendingTv[] = [];
@@ -37,8 +38,18 @@ if (npMoviesResult.status === "fulfilled") {
 ---
 
 <AppLayout>
-<title slot="head">Movie App</title>
+<title slot="head">Alfath Muqoddas' MovieApp</title>
 <meta name="description" content="Astro Cloudflare Movie App by Alfath Muqoddas | MovieApp" slot="head"/>
+<!-- opengraph meta tag -->
+    <meta property="og:title" content="Alfath Muqoddas' MovieApp" slot="head" />
+    <meta property="og:type" content="website" slot="head" />
+    <meta property="og:description" content="Astro Cloudflare Movie App by Alfath Muqoddas | MovieApp" slot="head" />
+    <meta property="og:url" content={Astro.url.origin} slot="head" />
+<!-- twitter meta tag -->
+    <meta name="twitter:card" content="summary_large_image" slot="head" />
+    <meta name="twitter:title" content="Alfath Muqoddas' MovieApp" slot="head"/>
+    <meta name="twitter:description" content="Astro Cloudflare Movie App by Alfath Muqoddas | MovieApp" slot="head"/>
+    <meta name="twitter:url" content={Astro.url.origin} slot="head"/>
 <MainLayout>
 	<article class="flex flex-col gap-8 mt-6">
 	<section>
@@ -56,9 +67,9 @@ if (npMoviesResult.status === "fulfilled") {
                 <figure class="w-full h-full relative">
                     <img 
                         src={imagesUrl + "w780" + movie.backdrop_path} 
-                        alt={"backdrop-" + slugify(movie.title)}
+                        alt={`backdrop-${slugify(movie.title)}-${movie.id}`}
                         class="w-full h-full object-cover"
-                        loading={index < 4 ? "eager" : "lazy"}
+                        loading={index < 3 ? "eager" : "lazy"}
                     />
 
                     <div class="absolute inset-0 bg-linear-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-6 md:p-4">
