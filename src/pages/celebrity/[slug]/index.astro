@@ -1,0 +1,108 @@
+---
+import AppLayout from "@/layout/AppLayout.astro";
+import MainLayout from "@/layout/MainLayout.astro";
+import { getCelebDetails, getCelebCombinedCredits } from "@/lib/getData";
+import {extractSlug, slugify} from "@/lib/helper";
+import {imagesUrl} from "@/lib/constant";
+
+const { slug } = Astro.params;
+
+if (!slug) {
+    return Astro.redirect('/404');
+}
+
+const id = extractSlug(slug);
+
+let celebDetails = {} as any
+let celebCombinedCredits = [];
+let error = { celebDetails: null, celebCombinedCredits: null };
+
+const [celebDetailsResult, celebCombinedCreditsResult] = await Promise.allSettled([
+    getCelebDetails(id),
+    getCelebCombinedCredits(id),
+]);
+
+if (celebDetailsResult.status === "fulfilled") {
+    celebDetails = celebDetailsResult.value;
+} else {
+    error.celebDetails = celebDetailsResult.reason.message;
+}
+
+if (celebCombinedCreditsResult.status === "fulfilled") {
+    celebCombinedCredits = celebCombinedCreditsResult.value;
+} else {
+    error.celebCombinedCredits = celebCombinedCreditsResult.reason.message;
+}
+
+const tvCredits = celebCombinedCredits?.filter((credit: any) => credit.media_type === "tv").sort((a: any, b: any) => a.first_air_date.slice(0,4) - b.first_air_date.slice(0,4));
+const movieCredits = celebCombinedCredits?.filter((credit: any) => credit.media_type === "movie").sort((a: any, b: any) => a.release_date.slice(0,4) - b.release_date.slice(0,4));
+const deathOrAge = ({birthday, deathday}: { birthday: string, deathday: string | null }) => {
+    if (deathday) {
+        return "🪦 " + new Date(deathday).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    } else {
+        //calculate age from birthday
+        const age = new Date().getFullYear() - new Date(birthday).getFullYear();
+        return "🪪 " + age + " y/o";
+    }
+}
+---
+<AppLayout>
+    <title slot="head">Celebrity | Alfath Muqoddas MovieApp</title>
+    <meta name="description" content="Celebrity | Alfath Muqoddas | MovieApp" slot="head"/>
+
+    <MainLayout>
+        <article class="flex flex-col gap-8 mt-8">
+        <section class="px-6 md:px-0">
+            <div class="flex items-center gap-4 max-w-lg mx-auto">
+						<figure class="basis-1/4 grow-0">
+							<img width="92" height="auto" src={celebDetails.profile_path ? imagesUrl + "w185" + celebDetails.profile_path : "https://placehold.co/92x138?text=No+Data"} alt={"poster-" + slugify(celebDetails.name)} class="w-full h-full object-cover" />
+						</figure>
+						<div class="basis-3/4 grow-0">
+						<h3 class="font-bold text-xl group-hover:underline group-hover:underline-offset-2 mb-2">{celebDetails.name}</h3>
+                        <p>🎂 {new Date(celebDetails.birthday).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+						<p>{deathOrAge({birthday: celebDetails.birthday, deathday: celebDetails.deathday})}</p>
+                        <p>🏠 {celebDetails.place_of_birth}</p>
+						</div>
+					</div>
+        </section>
+        <section class="px-6 md:px-0">
+		<h1 class="text-2xl font-bold">Movie Credits <span class="font-sans text-sm">{movieCredits.length}</span></h1>
+		<div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 mt-2 border-t border-l">
+			{
+				error.celebCombinedCredits ? <>Error fetching Celeb credits</> : movieCredits.lenght === 0 ? <>No Results</> : movieCredits.map((movie: any, index: number) => (
+					<a href={"/details/movie/" + slugify(movie.title) + "-" + movie.id} class="p-2 bg-white shadow-[3px_3px_0px_rgba(0,0,0,1)] border-b border-r border-black group flex items-center gap-2">
+						<figure class="basis-1/4 grow-0">
+							<img width="92" height="auto" src={movie.poster_path ? imagesUrl + "w92" + movie.poster_path : "https://placehold.co/92x138?text=No+Data"} alt={"poster-" + slugify(movie.title)} class="w-full h-full object-cover" />
+						</figure>
+						<div class="basis-3/4 grow-0">
+						<h3 class="font-bold text-sm group-hover:underline group-hover:underline-offset-2">{movie.title}</h3>
+						<p class="text-xs">{movie.release_date.slice(0,4)}</p>
+                        <p class="text-sm mt-2">as {movie.character || "-"}</p>
+						</div>
+					</a>
+				))
+			}
+		</div>
+	    </section>
+        <section class="px-6 md:px-0">
+		<h1 class="text-2xl font-bold">TV Show Credits <span class="font-sans text-sm">{tvCredits.length}</span></h1>
+		<div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 mt-2 border-t border-l">
+			{
+				error.celebCombinedCredits ? <>Error fetching Celeb credits</> : tvCredits.lenght === 0 ? <>No Results</> : tvCredits.map((tv: any) => (
+					<a href={"/details/tv/" + slugify(tv.name) + "-" + tv.id} class="p-2 bg-white shadow-[3px_3px_0px_rgba(0,0,0,1)] border-b border-r border-black group flex items-center gap-2">
+						<figure class="basis-1/4 grow-0">
+							<img width="92" height="auto" src={tv.poster_path ? imagesUrl + "w92" + tv.poster_path : "https://placehold.co/92x138?text=No+Data"} alt={"poster-" + slugify(tv.name)} class="w-full h-full object-cover" />
+						</figure>
+						<div class="basis-3/4 grow-0">
+						<h3 class="font-bold text-sm group-hover:underline group-hover:underline-offset-2">{tv.name}</h3>
+						<p class="text-xs">{tv.first_air_date.slice(0,4)}</p>
+                        <p class="text-sm mt-2">as {tv.character || "-"}</p>
+						</div>
+					</a>
+				))
+			}
+		</div>
+	    </section>
+    </article>
+    </MainLayout>
+</AppLayout>

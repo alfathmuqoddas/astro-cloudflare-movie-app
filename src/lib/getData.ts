@@ -108,8 +108,8 @@ export const getSimilarData = async (type: string, id: string) => {
   return results;
 };
 
-export const getCelebData = async (id: string, type: string) => {
-  const url = `https://api.themoviedb.org/3/person/${id}${type}?api_key=${API_KEY}`;
+export const getCelebDetails = async (id: string) => {
+  const url = `https://api.themoviedb.org/3/person/${id}?api_key=${API_KEY}`;
 
   const response = await fetch(url);
   if (!response.ok) {
@@ -117,6 +117,17 @@ export const getCelebData = async (id: string, type: string) => {
   }
   const data = await response.json();
   return data;
+};
+
+export const getCelebCombinedCredits = async (id: string) => {
+  const url = `https://api.themoviedb.org/3/person/${id}/combined_credits?api_key=${API_KEY}`;
+
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error("Failed to fetch celeb data");
+  }
+  const { cast } = await response.json();
+  return cast;
 };
 
 export const searchByQuery = async ({

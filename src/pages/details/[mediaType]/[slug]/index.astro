@@ -1,7 +1,7 @@
 ---
 import AppLayout from "@/layout/AppLayout.astro";
 import MainLayout from "@/layout/MainLayout.astro";
-import { getMediaDetails, getCreditData, getPicsData, getVideosData, getSimilarData, getCelebData  } from "@/lib/getData";
+import { getMediaDetails, getCreditData, getPicsData, getVideosData, getSimilarData  } from "@/lib/getData";
 import {imagesUrl} from "@/lib/constant";
 import {extractSlug, convertMinutesToHM, formatDateToMonthYear, slugify} from "@/lib/helper";
 
@@ -72,7 +72,7 @@ const importantCrews = credit?.crew?.filter((crew: any) => crew.job === "Directo
     <meta name="description" content={mediaDetails.overview + " " + "Alfath Muqoddas | MovieApp"} slot="head"/>
     <!-- opengraph meta -->
     <meta property="og:title" content={mediaDetails.title || mediaDetails.name + " | Alfath Muqoddas | MovieApp"} slot="head" />
-    <meta property="og:type" content="article" slot="head" />
+    <meta property="og:type" content="div" slot="head" />
     <meta property="og:description" content={mediaDetails.overview + " " + "Alfath Muqoddas | MovieApp"} slot="head" />
     <meta property="og:image" content={imagesUrl + "w300" + mediaDetails.poster_path} slot="head"/>
     <meta property="og:url" content={Astro.url.href} slot="head" />
@@ -83,13 +83,13 @@ const importantCrews = credit?.crew?.filter((crew: any) => crew.job === "Directo
     <meta name="twitter:image" content={imagesUrl + "w300" + mediaDetails.poster_path} slot="head"/>
     <meta name="twitter:url" content={Astro.url.href} slot="head"/>
     <MainLayout>
-        <section class="flex flex-col gap-8">
+        <article class="flex flex-col gap-8">
 
         <section>
             <figure class="h-120 relative overflow-hidden">
                 <img 
                     src={mediaDetails.backdrop_path ? imagesUrl + "w1280" + mediaDetails.backdrop_path : "https://placehold.co/1280x720?text=No+Data"}
-                    alt={mediaDetails.title || mediaDetails.name}
+                    alt={"backdrop-" + slugify(mediaDetails.title || mediaDetails.name)}
                     class="w-full h-full object-cover"
                     width="1280"
                     height="720"
@@ -154,10 +154,10 @@ const importantCrews = credit?.crew?.filter((crew: any) => crew.job === "Directo
         <section class="">
             <h1 class="text-2xl font-black max-md:mx-6">Cast</h1>
             {error.credit ? <>Error fetching cast data</> : (
-            <div class="max-w-6xl overflow-auto flex gap-2 py-2 px-6 md:px-0">
+            <div class="max-w-6xl overflow-auto flex gap-3 py-2 px-6 md:px-0">
                 {
-                    credit.cast.slice(0,10).map((cast: any) => (
-                        <div class="w-28 flex flex-col outline shadow-[2px_2px_0px_rgba(0,0,0,1)] bg-white">
+                    credit.cast.map((cast: any) => (
+                        <a href={"/celebrity/" + slugify(cast.name) + "-" + cast.id} class="w-28 flex flex-col group outline shadow-[3px_3px_0px_rgba(0,0,0,1)] bg-white" title={cast.name}>
                             <figure class="w-28">
                                 <img loading="lazy" src={cast.profile_path ? imagesUrl + "w185" + cast.profile_path : "https://placehold.co/96x96?text=No+Data"} class="w-full aspect-square object-cover" width="185" height="auto" />
                             </figure>
@@ -165,7 +165,7 @@ const importantCrews = credit?.crew?.filter((crew: any) => crew.job === "Directo
                                 <h3 class="font-bold text-sm group-hover:underline group-hover:underline-offset-2">{cast.name}</h3>
                                 <p class="text-xs">{cast.character}</p>
                             </div>
-                        </div>
+                        </a>
                     ))
                 }
             </div>)}
@@ -173,10 +173,10 @@ const importantCrews = credit?.crew?.filter((crew: any) => crew.job === "Directo
         <section class="">
             <h1 class="text-2xl font-black max-md:mx-6">Crews</h1>
             {error.credit ? <>Error fetching cast data</> : (
-            <div class="max-w-6xl overflow-auto flex gap-2 py-2 px-6 md:px-0">
+            <div class="max-w-6xl overflow-auto flex gap-3 py-2 px-6 md:px-0">
                 {
                     importantCrews.map((cast: any) => (
-                        <div class="w-28 flex flex-col outline shadow-[2px_2px_0px_rgba(0,0,0,1)] bg-white">
+                        <div class="w-28 flex flex-col outline shadow-[3px_3px_0px_rgba(0,0,0,1)] bg-white">
                             <figure class="w-28">
                                 <img loading="lazy" src={cast.profile_path ? imagesUrl + "w185" + cast.profile_path : "https://placehold.co/96x96?text=No+Data"} class="w-full aspect-square object-cover" width="185" height="auto" />
                             </figure>
@@ -194,14 +194,14 @@ const importantCrews = credit?.crew?.filter((crew: any) => crew.job === "Directo
             {error.videos ? <>Error fetching videos data</> : (
             <div class="max-w-6xl overflow-auto flex gap-2 py-2 px-6 md:px-0">
                 {
-                    videos.map((video: any) => (
+                    videos.map((video: any, index: number) => (
                         <a class="flex flex-col group cursor-pointer" href={"https://youtube.com/watch?v=" + video.key}>
                             <figure class="relative w-48 aspect-video flex items-center justify-center">
                                 <img 
                                     loading="lazy" 
                                     src={`https://img.youtube.com/vi/${video.key}/sddefault.jpg`} 
                                     class="w-full h-full object-cover brightness-75 transition-all group-hover:brightness-50" 
-                                    alt={video.name}
+                                    alt={"video-" + slug + "-" + index}
                                 />
                                 
                                 <span class="absolute inset-0 flex items-center justify-center text-white text-3xl">
@@ -224,14 +224,14 @@ const importantCrews = credit?.crew?.filter((crew: any) => crew.job === "Directo
             {error.pics ? <>Error fetching pics data</> : (
             <div class="max-w-6xl overflow-auto flex gap-2 py-2 px-6 md:px-0">
                 {
-                    pics?.posters?.map((pic: any) => (
+                    pics?.posters?.map((pic: any, index: number) => (
                         <a class="flex flex-col gap-2 group cursor-pointer" href={imagesUrl + "w185" + pic.file_path}>
                             <figure class="w-32">
                                 <img 
                                     loading="lazy" 
                                     src={imagesUrl + "w185" + pic.file_path} 
                                     class="w-full h-full object-cover" 
-                                    alt={pic.file_path}
+                                    alt={"pics-" + slug + "-" + index}
                                     width="185"
                                     height="auto"
                                 />
@@ -244,12 +244,12 @@ const importantCrews = credit?.crew?.filter((crew: any) => crew.job === "Directo
 
         <section>
 		<h1 class="text-2xl font-black max-md:mx-6">Similar {mediaType === "movie" ? "Movies" : "TV Shows"}</h1>
-		<article class="max-w-6xl overflow-auto flex gap-3 py-2 px-6 md:px-0">
+		<div class="max-w-6xl overflow-auto flex gap-3 py-2 px-6 md:px-0">
 			{
 				error.similar ? <>Error fetching similar movies</> : similar.map((media: any) => (
 					<a href={"/details/" + mediaType + "/" + slugify(media.title || media.name) + "-" + media.id} title={media.title || media.name} class="group shadow-[3px_3px_0px_rgba(0,0,0,1)] bg-white outline">
 						<figure class="w-32">
-							<img width="92" height="auto" src={media.poster_path ? imagesUrl + "w185" + media.poster_path : "https://placehold.co/185x274?text=No+Data"} alt={media.title || media.name} class="w-full h-auto object-cover" />
+							<img width="185" height="auto" src={media.poster_path ? imagesUrl + "w185" + media.poster_path : "https://placehold.co/185x274?text=No+Data"} alt={"poster-" + slugify(media.title || media.name)} class="w-full h-auto object-cover" />
 						</figure>
 						<div class="text-center p-2">
 						<h3 class="font-bold text-sm group-hover:underline group-hover:underline-offset-2 line-clamp-3">{media.title || media.name}</h3>
@@ -258,8 +258,8 @@ const importantCrews = credit?.crew?.filter((crew: any) => crew.job === "Directo
 					</a>
 				))
 			}
-		</article>
-	</section>
-        </section>
+		</div>
+	    </section>
+        </article>
     </MainLayout>
 </AppLayout>
