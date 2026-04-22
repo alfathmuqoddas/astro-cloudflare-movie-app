@@ -98,7 +98,7 @@ const importantCrews = credit?.crew?.filter((crew: any) => crew.job === "Directo
                 <div class="absolute inset-0 bg-linear-to-t from-black/90 via-black/80 to-transparent flex flex-col justify-end p-6 md:p-4">
                     <div class="flex flex-col md:flex-row gap-6 items-center mx-auto h-full min-h-0 overflow-hidden">
                         <figure class="shrink rounded-2xl border-2 border-white/10 overflow-hidden min-h-0 max-h-full">
-                            <img src={imagesUrl + "w185" + mediaDetails.poster_path} class="w-auto h-full object-containe" width="185" height="auto" />
+                            <img src={imagesUrl + "w185" + mediaDetails.poster_path} class="w-auto h-full object-contain" width="185" height="auto" alt={`hero-${slug}`} />
                         </figure>
                         <div class="flex flex-col flex-1 min-h-0 overflow-y-auto gap-2">
                             <div class="flex flex-wrap gap-1">
@@ -159,10 +159,10 @@ const importantCrews = credit?.crew?.filter((crew: any) => crew.job === "Directo
                     credit.cast.map((cast: any) => (
                         <a href={"/celebrity/" + slugify(cast.name) + "-" + cast.id} class="w-28 flex flex-col group outline shadow-[3px_3px_0px_rgba(0,0,0,1)] bg-white" title={cast.name}>
                             <figure class="w-28">
-                                <img loading="lazy" src={cast.profile_path ? imagesUrl + "w185" + cast.profile_path : "https://placehold.co/96x96?text=No+Data"} class="w-full aspect-square object-cover" width="185" height="auto" />
+                                <img loading="lazy" alt={`cast-pics-${slugify(cast.name)}-${cast.id}`} src={cast.profile_path ? imagesUrl + "w185" + cast.profile_path : "https://placehold.co/96x96?text=No+Data"} class="w-full aspect-square object-cover" width="185" height="auto" />
                             </figure>
                             <div class="p-2">
-                                <h3 class="font-bold text-sm group-hover:underline group-hover:underline-offset-2">{cast.name}</h3>
+                                <h2 class="font-bold text-sm group-hover:underline group-hover:underline-offset-2">{cast.name}</h2>
                                 <p class="text-xs">{cast.character}</p>
                             </div>
                         </a>
@@ -178,10 +178,10 @@ const importantCrews = credit?.crew?.filter((crew: any) => crew.job === "Directo
                     importantCrews.map((cast: any) => (
                         <div class="w-28 flex flex-col outline shadow-[3px_3px_0px_rgba(0,0,0,1)] bg-white">
                             <figure class="w-28">
-                                <img loading="lazy" src={cast.profile_path ? imagesUrl + "w185" + cast.profile_path : "https://placehold.co/96x96?text=No+Data"} class="w-full aspect-square object-cover" width="185" height="auto" />
+                                <img loading="lazy" alt={`crew-pics-${slugify(cast.name)}-${cast.id}`} src={cast.profile_path ? imagesUrl + "w185" + cast.profile_path : "https://placehold.co/96x96?text=No+Data"} class="w-full aspect-square object-cover" width="185" height="auto" />
                             </figure>
                             <div class="p-2">
-                                <h3 class="font-bold text-sm group-hover:underline group-hover:underline-offset-2">{cast.name}</h3>
+                                <h2 class="font-bold text-sm group-hover:underline group-hover:underline-offset-2">{cast.name}</h2>
                                 <p class="text-xs">{cast.job}</p>
                             </div>
                         </div>
@@ -252,7 +252,7 @@ const importantCrews = credit?.crew?.filter((crew: any) => crew.job === "Directo
 							<img width="185" height="auto" src={media.poster_path ? imagesUrl + "w185" + media.poster_path : "https://placehold.co/185x274?text=No+Data"} alt={"poster-" + slugify(media.title || media.name)} class="w-full h-auto object-cover" />
 						</figure>
 						<div class="text-center p-2">
-						<h3 class="font-bold text-sm group-hover:underline group-hover:underline-offset-2 line-clamp-3">{media.title || media.name}</h3>
+						<h2 class="font-bold text-sm group-hover:underline group-hover:underline-offset-2 line-clamp-3">{media.title || media.name}</h2>
 						<p class="text-xs">{media?.release_date ? media.release_date.slice(0,4) : media.first_air_date.slice(0, 4)}</p>
 						</div>
 					</a>
