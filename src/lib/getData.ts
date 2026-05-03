@@ -23,7 +23,7 @@ export const getTrendingData = async ({
   const res = await fetch(
     `https://api.themoviedb.org/3/trending/${type}/${timeframe}?api_key=${
       API_KEY
-    }&language=en-US&page=1`,
+    }&language=en-US&page=1&append_to_response=last_air_date`,
   );
   if (!res.ok) {
     throw new Error("Failed to fetch trending data");
@@ -177,8 +177,10 @@ export const getGenres = async (mediaType: "tv" | "movie") => {
   return genres;
 };
 
-export const getAllEpisodes = async (id: string) => {
-  const res = await fetch(`https://api.imdbapi.dev/titles/${id}/episodes`);
+export const getAllEpisodesBySeason = async (id: string, season: string) => {
+  const res = await fetch(
+    `https://api.imdbapi.dev/titles/${id}/episodes?season=${season}`,
+  );
   if (!res.ok) {
     throw new Error("Failed to fetch episodes data");
   }
@@ -193,4 +195,13 @@ export const getMediaDetailsByIMDBID = async (id: string) => {
   }
   const mediaDetails = await res.json();
   return mediaDetails;
+};
+
+export const getSeasons = async (id: string) => {
+  const res = await fetch(`https://api.imdbapi.dev/titles/${id}/seasons`);
+  if (!res.ok) {
+    throw new Error("Failed to fetch seasons data");
+  }
+  const { seasons } = await res.json();
+  return seasons;
 };

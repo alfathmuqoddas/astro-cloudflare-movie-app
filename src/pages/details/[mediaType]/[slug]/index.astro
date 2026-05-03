@@ -83,7 +83,7 @@ const importantCrews = credit?.crew?.filter((crew: any) => crew.job === "Directo
     <meta name="twitter:image" content={imagesUrl + "w300" + mediaDetails.poster_path} slot="head"/>
     <meta name="twitter:url" content={Astro.url.href} slot="head"/>
     <MainLayout>
-        <article class="flex flex-col gap-8">
+        <article class="flex flex-col gap-8 pb-8">
 
         <section>
             <figure class="h-120 relative overflow-hidden">
@@ -111,7 +111,7 @@ const importantCrews = credit?.crew?.filter((crew: any) => crew.job === "Directo
                             </h1>
                             <div class="flex gap-2 items-center flex-wrap">
                                 <span class="text-sm text-white rounded-full px-3 py-1 bg-zinc-500">
-                                    📅 {formatDateToMonthYear(mediaDetails.release_date || mediaDetails.first_air_date)}
+                                    📅 {mediaType === "tv" ? `${mediaDetails.first_air_date.slice(0, 4)} - ${mediaDetails.last_air_date.slice(0, 4)}` : formatDateToMonthYear(mediaDetails.release_date)}
                                 </span>
                                 <span class={`flex items-center gap-1 text-sm px-3 py-1 rounded-full
                                     ${mediaDetails.vote_average < 6 

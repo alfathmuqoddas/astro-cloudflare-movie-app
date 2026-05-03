@@ -1,7 +1,7 @@
 ---
 import AppLayout from "@/layout/AppLayout.astro";
 import MainLayout from "@/layout/MainLayout.astro";
-import { getAllEpisodes, getMediaDetailsByIMDBID } from "@/lib/getData";
+import { getAllEpisodesBySeason as getAllEpisodes, getMediaDetailsByIMDBID, getSeasons } from "@/lib/getData";
 import {extractSlug} from "@/lib/helper";
 
 const { slug } = Astro.params;
@@ -12,20 +12,15 @@ if (!slug) {
 
 const id = extractSlug(slug);
 
-let episodes = [];
-let mediaDetails = {};
-let error = { episodes: null, mediaDetails: null };
+let seasons = {} as any
+let mediaDetails = {} as any
+let error = { episodes: null, mediaDetails: null, seasons: null };
 
-const [mediaDetailsResult, episodesResult] = await Promise.allSettled([
+
+const [mediaDetailsResult, seasonsResult] = await Promise.allSettled([
     getMediaDetailsByIMDBID(id),
-    getAllEpisodes(id),
+    getSeasons(id),
 ]);
-
-if (episodesResult.status === "fulfilled") {
-    episodes = episodesResult.value;
-} else {
-    error.episodes = episodesResult.reason.message;
-}
 
 if (mediaDetailsResult.status === "fulfilled") {
     mediaDetails = mediaDetailsResult.value;
@@ -33,12 +28,50 @@ if (mediaDetailsResult.status === "fulfilled") {
     error.mediaDetails = mediaDetailsResult.reason.message;
 }
 
+if (seasonsResult.status === "fulfilled") {
+    seasons = seasonsResult.value;
+} else {
+    error.seasons = seasonsResult.reason.message;
+}
+
+const getEpisodesAllSeasons = (id: string, seasons: { season: string }[]) => {
+  return seasons.map((s) => getAllEpisodes(id, s.season));
+};
+
+const episodesAllSeasonsResult = seasons?.length
+  ? await Promise.allSettled(getEpisodesAllSeasons(id, seasons))
+  : [];
+
+const episodes = episodesAllSeasonsResult.map((result) => {
+  if (result.status === "fulfilled") {
+    return result.value
+  } else {
+    console.error(result.reason);
+    return [];
+  }
+});
+
+const allEpisodes = episodes
+  .flat()
+  .sort((a: any, b: any) => {
+    const ra = a?.rating?.aggregateRating ?? -Infinity;
+    const rb = b?.rating?.aggregateRating ?? -Infinity;
+    return rb - ra;
+  });
+
 const episodeMap = new Map(
-  episodes?.map((ep: any) => [`${ep.season}-${ep.episodeNumber}`, ep])
+  allEpisodes.map((ep: any) => [`${ep.season}-${ep.episodeNumber}`, ep])
 );
 
-const maxSeason = Math.max(...episodes.map((e: any) => parseInt(e.season)));
-const maxEpisode = Math.max(...episodes.map((e: any) => e.episodeNumber));
+const maxSeason = allEpisodes.length
+  ? Math.max(...allEpisodes.map((e: any) => parseInt(e.season)))
+  : 0;
+const maxEpisode = allEpisodes.length
+  ? Math.max(...allEpisodes.map((e: any) => e.episodeNumber))
+  : 0;
+
+const highestRatingEpisode = allEpisodes[0];
+const lowestRatingEpisode = allEpisodes[allEpisodes.length - 1];
 
 const seasonsHeader = Array.from({ length: maxSeason }, (_, i) => i + 1);
 const episodeRows = Array.from({ length: maxEpisode }, (_, i) => i + 1);
@@ -53,24 +86,63 @@ const getEp = (s: number, e: number):any => episodeMap.get(`${s}-${e}`);
   return 'bg-red-500 text-white';
 };
 
+console.log(getEp(1, 1));
 ---
 <AppLayout>
     <title slot="head">{id} Ratings | Alfath Muqoddas MovieApp</title>
     <MainLayout>
         <!-- <pre>{JSON.stringify(mediaDetails, null, 2)}</pre> -->
-        <section class="mt-6">
+        <section class="px-6 md:px-0 py-6 flex flex-col gap-4">
             <h1 class="text-2xl font-black">Episodes Ratings</h1>
+
+            <!-- series info card -->
+            <div class="flex flex-col md:flex-row gap-4">
+                <figure class="w-24 h-auto rounded-lg overflow-hidden">
+                    <img src={mediaDetails?.primaryImage.url} alt={`poster-${mediaDetails?.id}`} class="w-full h-full object-cover" />
+                </figure>
+                <div class="flex flex-col gap-1">
+                    <h2 class="text-xl font-bold">{mediaDetails?.primaryTitle}</h2>
+                    <p class="text-sm">{mediaDetails?.startYear} - {mediaDetails?.endYear ?? "-"}</p>
+                    <p class="text-sm">{mediaDetails?.genres.join(", ")}</p>
+                    
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-2">
+                <div>
+                    <h2>Highest Rated</h2>
+                    <p class="text-sm">{highestRatingEpisode.title}, S{highestRatingEpisode.season}E{highestRatingEpisode.episodeNumber}, Rating: <span class={`p-1 ${getRatingColor(highestRatingEpisode.rating.aggregateRating)}`}>{highestRatingEpisode.rating.aggregateRating}</span></p>
+                </div>
+                <div>
+                    <h2>Lowest Rated</h2>
+                    <p class="text-sm">{lowestRatingEpisode.title}, S{lowestRatingEpisode.season}E{lowestRatingEpisode.episodeNumber}, Rating: <span class={`p-1 ${getRatingColor(lowestRatingEpisode.rating.aggregateRating)}`}>{lowestRatingEpisode.rating.aggregateRating}</span></p>
+                </div>
+            </div>
             
-            <div class={`flex gap-2 max-w-6xl overflow-auto`}>
+            <div class={`flex gap-2 max-w-6xl overflow-auto pt-2 md:pt-0`}>
+               <div class="flex flex-col gap-2">
+                    <p class="size-6"></p>
+                        {
+                            episodeRows.map((e: number) => (
+                                <div class={`flex justify-center items-center size-8`}>
+                                    <span class="text-sm">E{e}</span>
+                                </div>
+                            ))
+                        }
+                </div>
                 {
                     seasonsHeader.map((s: number) => (
                         <div class="flex flex-col gap-2">
+                            <p class="text-center size-6">S{s}</p>
                             {
-                                episodeRows.map((e: number) => (
-                                    <div class={`flex justify-center items-center w-8 h-8 ${getRatingColor(getEp(s, e)?.rating?.aggregateRating)}`}>
-                                        <span class="text-sm">{getEp(s, e)?.rating?.aggregateRating || "-"}</span>
-                                    </div>
-                                ))
+                                episodeRows.map((e: number) => {
+                                    const ep = getEp(s, e);
+                                    const rating = ep?.rating?.aggregateRating;
+                                    return (
+                                    <a href="#" class={`flex justify-center items-center w-8 h-8 ${getRatingColor(rating)}`} title={ep?.title}>
+                                        <span class="text-sm">{rating|| "-"}</span>
+                                    </a>
+                                )})
                             }
                         </div>
                     ))
