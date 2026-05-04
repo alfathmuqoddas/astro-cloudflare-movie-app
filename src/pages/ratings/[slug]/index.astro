@@ -12,8 +12,8 @@ if (!slug) {
 
 const id = extractSlug(slug);
 
-let seasons = {} as any
-let mediaDetails = {} as any
+let seasons = {} as {season: string, episodeCount: number}[]
+let mediaDetails = {} as {id: string, primaryTitle: string, primaryImage: {url: string}, startYear: number, endYear: number, genres: string[]}
 let error = { episodes: null, mediaDetails: null, seasons: null };
 
 
@@ -53,21 +53,22 @@ const episodes = episodesAllSeasonsResult.map((result) => {
 
 const allEpisodes = episodes
   .flat()
-  .sort((a: any, b: any) => {
-    const ra = a?.rating?.aggregateRating ?? -Infinity;
-    const rb = b?.rating?.aggregateRating ?? -Infinity;
-    return rb - ra;
-  });
+  .filter((ep) => ep?.rating?.aggregateRating != null)
+  .map((ep) => ({
+    ...ep,
+    safeRating: ep?.rating?.aggregateRating ?? 0
+  }))
+  .sort((a, b) => b.safeRating - a.safeRating);
 
 const episodeMap = new Map(
   allEpisodes.map((ep: any) => [`${ep.season}-${ep.episodeNumber}`, ep])
 );
 
-const maxSeason = allEpisodes.length
-  ? Math.max(...allEpisodes.map((e: any) => parseInt(e.season)))
+const maxSeason = seasons.length
+  ? Math.max(...seasons.map((e) => parseInt(e.season)))
   : 0;
 const maxEpisode = allEpisodes.length
-  ? Math.max(...allEpisodes.map((e: any) => e.episodeNumber))
+  ? Math.max(...allEpisodes.map((e) => e.episodeNumber))
   : 0;
 
 const highestRatingEpisode = allEpisodes[0];
@@ -83,48 +84,63 @@ const getEp = (s: number, e: number):any => episodeMap.get(`${s}-${e}`);
   if (rating >= 8.5) return 'bg-green-600 text-white';
   if (rating >= 7.5) return 'bg-green-400 text-zinc-900';
   if (rating >= 6.5) return 'bg-yellow-400 text-zinc-900';
+  if (rating == null) return 'bg-zinc-500 text-white';
   return 'bg-red-500 text-white';
 };
 
-console.log(getEp(1, 1));
+console.log(episodes[3])
+
 ---
 <AppLayout>
-    <title slot="head">{id} Ratings | Alfath Muqoddas MovieApp</title>
+    <title slot="head">{mediaDetails?.primaryTitle} Ratings Map | Alfath Muqoddas MovieApp</title>
+    <meta name="description" content={`Rating map for ${mediaDetails?.primaryTitle} ${mediaDetails?.startYear} - ${mediaDetails?.endYear} | Alfath Muqoddas MovieApp`} />
+
+    <!-- opengraph meta tags -->
+        <meta property="og:title" content={`${mediaDetails?.primaryTitle} Ratings Map | Alfath Muqoddas MovieApp`} />
+        <meta property="og:description" content={`Rating map for ${mediaDetails?.primaryTitle} ${mediaDetails?.startYear} - ${mediaDetails?.endYear} | Alfath Muqoddas MovieApp`} />
+        <meta property="og:image" content={mediaDetails?.primaryImage.url} />
+        <meta property="og:url" content={Astro.url.href} />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Alfath Muqoddas MovieApp" />
     <MainLayout>
         <!-- <pre>{JSON.stringify(mediaDetails, null, 2)}</pre> -->
         <section class="px-6 md:px-0 py-6 flex flex-col gap-4">
             <h1 class="text-2xl font-black">Episodes Ratings</h1>
 
             <!-- series info card -->
-            <div class="flex flex-col md:flex-row gap-4">
+
+            {error.mediaDetails ? <div class="text-red-500">Sorry error fetching media tv details, Error: {error.mediaDetails}</div> : (
+            <div class="flex gap-4">
                 <figure class="w-24 h-auto rounded-lg overflow-hidden">
                     <img src={mediaDetails?.primaryImage.url} alt={`poster-${mediaDetails?.id}`} class="w-full h-full object-cover" />
                 </figure>
                 <div class="flex flex-col gap-1">
-                    <h2 class="text-xl font-bold">{mediaDetails?.primaryTitle}</h2>
-                    <p class="text-sm">{mediaDetails?.startYear} - {mediaDetails?.endYear ?? "-"}</p>
-                    <p class="text-sm">{mediaDetails?.genres.join(", ")}</p>
+                    <h2 class="text-xl font-bold flex-wrap">{mediaDetails?.primaryTitle}</h2>
+                    <p class="text-sm">📅 {mediaDetails?.startYear} - {mediaDetails?.endYear ?? "-"}</p>
+                    <p class="text-sm flex-wrap">🎭 {mediaDetails?.genres.join(", ")}</p>
                     
                 </div>
             </div>
+            )}
+
 
             <div class="flex flex-col gap-2">
                 <div>
                     <h2>Highest Rated</h2>
-                    <p class="text-sm">{highestRatingEpisode.title}, S{highestRatingEpisode.season}E{highestRatingEpisode.episodeNumber}, Rating: <span class={`p-1 ${getRatingColor(highestRatingEpisode.rating.aggregateRating)}`}>{highestRatingEpisode.rating.aggregateRating}</span></p>
+                    <p class="text-sm">{highestRatingEpisode.title}, S{highestRatingEpisode.season}E{highestRatingEpisode.episodeNumber}, <span class={`p-1 ${getRatingColor(highestRatingEpisode.safeRating)}`}>{highestRatingEpisode.safeRating}</span></p>
                 </div>
                 <div>
                     <h2>Lowest Rated</h2>
-                    <p class="text-sm">{lowestRatingEpisode.title}, S{lowestRatingEpisode.season}E{lowestRatingEpisode.episodeNumber}, Rating: <span class={`p-1 ${getRatingColor(lowestRatingEpisode.rating.aggregateRating)}`}>{lowestRatingEpisode.rating.aggregateRating}</span></p>
+                    <p class="text-sm">{lowestRatingEpisode.title}, S{lowestRatingEpisode.season}E{lowestRatingEpisode.episodeNumber}, <span class={`p-1 ${getRatingColor(lowestRatingEpisode.safeRating)}`}>{lowestRatingEpisode.safeRating}</span></p>
                 </div>
             </div>
             
-            <div class={`flex gap-2 max-w-6xl overflow-auto pt-2 md:pt-0`}>
-               <div class="flex flex-col gap-2">
+            <div class={`flex gap-1 max-w-6xl overflow-auto pt-2 md:pt-0`}>
+               <div class="flex flex-col gap-1">
                     <p class="size-6"></p>
                         {
                             episodeRows.map((e: number) => (
-                                <div class={`flex justify-center items-center size-8`}>
+                                <div class={`flex justify-center items-center h-10`}>
                                     <span class="text-sm">E{e}</span>
                                 </div>
                             ))
@@ -132,14 +148,14 @@ console.log(getEp(1, 1));
                 </div>
                 {
                     seasonsHeader.map((s: number) => (
-                        <div class="flex flex-col gap-2">
-                            <p class="text-center size-6">S{s}</p>
+                        <div class="flex flex-col gap-1">
+                            <p class="text-center w-10">S{s}</p>
                             {
                                 episodeRows.map((e: number) => {
                                     const ep = getEp(s, e);
                                     const rating = ep?.rating?.aggregateRating;
                                     return (
-                                    <a href="#" class={`flex justify-center items-center w-8 h-8 ${getRatingColor(rating)}`} title={ep?.title}>
+                                    <a href="#" class={`flex justify-center items-center size-10 ${getRatingColor(rating)}`} title={ep?.title}>
                                         <span class="text-sm">{rating|| "-"}</span>
                                     </a>
                                 )})

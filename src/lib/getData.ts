@@ -1,3 +1,5 @@
+import type { TEpisodes } from "@/types";
+
 const API_KEY = "403829fffc80d8184aa974d631a475c5";
 
 export const getPopularData = async (type: string, page?: number) => {
@@ -177,7 +179,10 @@ export const getGenres = async (mediaType: "tv" | "movie") => {
   return genres;
 };
 
-export const getAllEpisodesBySeason = async (id: string, season: string) => {
+export const getAllEpisodesBySeason = async (
+  id: string,
+  season: string,
+): Promise<TEpisodes[]> => {
   const res = await fetch(
     `https://api.imdbapi.dev/titles/${id}/episodes?season=${season}`,
   );

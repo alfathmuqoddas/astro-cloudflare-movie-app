@@ -41,3 +41,27 @@ export type TTrendingTv = {
   vote_count: number;
   origin_country: string[];
 };
+
+export type TEpisodes = {
+  id: string;
+  title: string;
+  primaryImage: {
+    url: string;
+    width: number;
+    height: number;
+    type: string;
+  };
+  season: string;
+  episodeNumber: number;
+  runtimeSeconds: number;
+  plot: string;
+  rating: {
+    aggregateRating: number;
+    voteCount: number;
+  };
+  releaseDate: {
+    year: number;
+    month: number;
+    day: number;
+  };
+};
