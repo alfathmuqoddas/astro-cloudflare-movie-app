@@ -43,10 +43,10 @@ if (movieResult.status === "fulfilled") {
 					errors.movie ? <>Error</> : movieData.length === 0 ? <>No Results</> : movieData.map((movie: any) => (
 						<a href={"/details/movie/" + slugify(movie.title) + "-" + movie.id} class="bg-white p-2 border-b border-r border-black group flex items-center gap-2">
 							<figure class="basis-1/6 md:basis-1/4 grow-0">
-								<img width="92" height="auto" src={movie.poster_path ? imagesUrl + "w92" + movie.poster_path : "https://placehold.co/96x96?text=No+Data"} alt={"poster-" + slugify(movie.title)} class="w-full h-full object-cover" />
+								<img width="92" height="auto" src={movie.poster_path ? imagesUrl + "w92" + movie.poster_path : "https://placehold.co/96x96?text=No+Data"} alt={"poster-" + slugify(movie.title)} class="w-full h-full object-cover" transition:name={`poster-${slugify(movie.title)}-${movie.id}`}/>
 							</figure>
 							<div class="basis-5/6 md:basis-3/4 grow-0">
-							<h3 class="font-bold text-sm group-hover:underline group-hover:underline-offset-2">{movie.title}</h3>
+							<h3 class="font-bold text-sm group-hover:underline group-hover:underline-offset-2" transition:name={`title-${slugify(movie.title)}-${movie.id}`}>{movie.title}</h3>
 							<p class="text-xs">{movie.release_date.slice(0,4)}</p>
 							</div>
 						</a>
@@ -61,10 +61,10 @@ if (movieResult.status === "fulfilled") {
 					errors.tv ? <>Error</> : tvData.lenght === 0 ? <>No Results</> : tvData.map((tv: any) => (
 						<a href={"/details/tv/" + slugify(tv.name) + "-" + tv.id} class="bg-white p-2 border-b border-r border-black group flex items-center gap-2">
 							<figure class="basis-1/6 md:basis-1/4 grow-0">
-								<img width="92" height="auto" src={tv.poster_path ? imagesUrl + "w92" + tv.poster_path : "https://placehold.co/96x96?text=No+Data"} alt={"poster-" + slugify(tv.name)} class="w-full h-full object-cover" />
+								<img width="92" height="auto" src={tv.poster_path ? imagesUrl + "w92" + tv.poster_path : "https://placehold.co/96x96?text=No+Data"} alt={"poster-" + slugify(tv.name)} class="w-full h-full object-cover" transition:name={`poster-${slugify(tv.name)}-${tv.id}`}/>
 							</figure>
 							<div class="basis-5/6 md:basis-3/4 grow-0">
-							<h3 class="font-bold text-sm group-hover:underline group-hover:underline-offset-2">{tv.name}</h3>
+							<h3 class="font-bold text-sm group-hover:underline group-hover:underline-offset-2" transition:name={`title-${slugify(tv.name)}-${tv.id}`}>{tv.name}</h3>
 							<p class="text-xs">{tv.first_air_date.slice(0,4)}</p>
 							</div>
 						</a>
