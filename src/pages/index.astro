@@ -1,39 +1,9 @@
 ---
 import AppLayout from "@/layout/AppLayout.astro";
 import MainLayout from "@/layout/MainLayout.astro";
-import { getTrendingData, getNowPlayingData } from "@/lib/getData";
-import {imagesUrl} from "@/lib/constant";
-import type { TTrendingMovies, TTrendingTv } from "@/types";
-import {slugify} from "@/lib/helper";
-
-let trendingMovies: TTrendingMovies[] = [];
-let trendingTv: TTrendingTv[] = [];
-let nowPlayingMovies: TTrendingMovies[] = []
-let errors = { movies: null, tv: null, npMovies: null };
-
-const [movieResult, tvResult, npMoviesResult] = await Promise.allSettled([
-    getTrendingData({ timeframe: "week", type: "movie" }),
-    getTrendingData({ timeframe: "week", type: "tv" }),
-	getNowPlayingData()
-]);
-
-if (movieResult.status === "fulfilled") {
-    trendingMovies = movieResult.value;
-} else {
-    errors.movies = movieResult.reason.message;
-}
-
-if (tvResult.status === "fulfilled") {
-    trendingTv = tvResult.value;
-} else {
-    errors.tv = tvResult.reason.message;
-}
-
-if (npMoviesResult.status === "fulfilled") {
-    nowPlayingMovies = npMoviesResult.value;
-} else {
-    errors.npMovies = npMoviesResult.reason.message;
-}
+import TrendingMovies from "@/components/sections/home/MovieTrending.astro";
+import TrendingTv from "@/components/sections/home/TvTrending.astro";
+import NowPlaying from "@/components/sections/home/NowPlaying.astro";
 ---
 
 <AppLayout>
@@ -53,77 +23,23 @@ if (npMoviesResult.status === "fulfilled") {
 	<article class="flex flex-col gap-8 mt-6">
 	<section>
 		<h1 class="text-xl md:text-3xl font-bold pl-6 md:pl-0">Trending Movies</h1>
-		<div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 py-2 gap-1">
-    {
-        errors.movies ? <>Error fetching trending movies</> : trendingMovies.slice(0,12).map((movie: any, index: number) => (
-            <a 
-                class={`
-                    ${index === 0 ? "md:col-span-2 md:row-span-2 min-h-75" : "h-auto"} 
-                    flex flex-col relative group overflow-hidden
-                `} 
-                href={"/details/movie/" + slugify(movie.title) + "-" + movie.id}
-            >
-                <figure class="w-full h-full relative">
-                    <img 
-                        src={imagesUrl + "w780" + movie.backdrop_path} 
-                        alt={`backdrop-${slugify(movie.title)}-${movie.id}`}
-                        class="w-full h-full object-cover"
-                        loading={index < 3 ? "eager" : "lazy"}
-                        transition:name={`backdrop-${slugify(movie.title)}-${movie.id}`}
-                    />
-
-                    <div class="absolute inset-0 bg-linear-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-6 md:p-4">
-                        <h2 class={`font-heading uppercase leading-tight text-white ${index === 0 ? "text-xl md:text-3xl" : "text-lg"} group-hover:underline group-hover:underline-offset-2`} transition:name={`title-${slugify(movie.title)}-${movie.id}`}>
-                            {movie.title}
-                        </h2>
-                        {index === 0 && (
-                            <p class="text-xs text-yellow-400 font-bold">FEATURED RELEASE</p>
-                        )}
-                    </div>
-                </figure>
-            </a>
-        ))
-    }
-</div>
+		<TrendingMovies server:defer>
+            <p slot="fallback">Loading...</p>
+        </TrendingMovies>
 	</section>
 
 	<section class="px-6 md:px-0">
 		<h1 class="text-xl md:text-3xl font-bold">Trending TV Shows</h1>
-		<div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 mt-2 border-t border-l">
-			{
-				errors.tv ? <>Error fetching trending tv shows</> : trendingTv.map((tv: any, index: number) => (
-					<a href={"/details/tv/" + slugify(tv.name) + "-" + tv.id} class="p-2 bg-white shadow-[3px_3px_0px_rgba(0,0,0,1)] border-b border-r border-black group flex items-center gap-2">
-						<figure class="basis-1/4 grow-0">
-							<img width="185" height="auto" src={imagesUrl + "w185" + tv.poster_path} alt={"poster-" + slugify(tv.name)} class="w-full h-full object-cover" transition:name={`poster-${slugify(tv.name)}-${tv.id}`}/>
-						</figure>
-						<div class="basis-3/4 grow-0">
-						<h2 class="font-mono">{index + 1}</h2>
-						<h3 class="font-bold text-sm group-hover:underline group-hover:underline-offset-2" transition:name={`title-${slugify(tv.name)}-${tv.id}`}>{tv.name}</h3>
-						<p class="text-xs">{tv.first_air_date.slice(0,4)}</p>
-						</div>
-					</a>
-				))
-			}
-		</div>
+		<TrendingTv server:defer>
+            <p slot="fallback">Loading...</p>
+        </TrendingTv>
 	</section>
 
 	<section>
 		<h1 class="text-xl md:text-3xl font-bold pl-6 md:pl-0">Now Playing</h1>
-		<div class="max-w-6xl overflow-auto flex gap-3 py-2 px-6 md:px-0">
-			{
-				errors.npMovies ? <>Error fetching now playing movies</> : nowPlayingMovies.map((movie: any) => (
-					<a href={"/details/movie/" + slugify(movie.title) + "-" + movie.id} title={movie.title} class="group outline shadow-[3px_3px_0px_rgba(0,0,0,1)] bg-white">
-						<figure class="w-32">
-							<img width="185" height="auto" src={imagesUrl + "w185" + movie.poster_path} alt={"poster-" + slugify(movie.title)} class="w-full h-full object-cover" transition:name={`poster-${slugify(movie.title)}-${movie.id}`}/>
-						</figure>
-						<div class="text-center p-2">
-						<h2 class="font-bold text-sm group-hover:underline group-hover:underline-offset-2 line-clamp-3" transition:name={`title-${slugify(movie.title)}-${movie.id}`}>{movie.title}</h2>
-						<p class="text-xs">{movie.release_date.slice(0,4)}</p>
-						</div>
-					</a>
-				))
-			}
-		</div>
+		<NowPlaying server:defer>
+            <p slot="fallback">Loading...</p>
+        </NowPlaying>
 	</section>
 	</article>
 </MainLayout>
