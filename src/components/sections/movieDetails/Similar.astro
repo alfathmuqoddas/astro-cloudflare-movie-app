@@ -1,0 +1,41 @@
+---
+import {getSimilarData} from "@/lib/getData";
+import {imagesUrl} from "@/lib/constant";
+import {slugify} from "@/lib/helper";
+
+const {mediaType, id} = Astro.props;
+
+let similar = [];
+let error = null
+
+try {
+    similar = await getSimilarData(mediaType, id);
+} catch (e: any) {
+    console.error(e.message);
+    error = e.message
+}
+---
+{
+    error ? (
+        <p>{error}</p>
+    ) : (
+        <section>
+            <h1 class="text-2xl font-black max-md:mx-6">Similar {mediaType === "movie" ? "Movies" : "TV Shows"}</h1>
+            <div class="max-w-6xl overflow-auto flex gap-3 py-2 px-6 md:px-0">
+                {
+                    similar.map((media: any) => (
+                        <a href={"/details/" + mediaType + "/" + slugify(media.title || media.name) + "-" + media.id} title={media.title || media.name} class="group shadow-[3px_3px_0px_rgba(0,0,0,1)] bg-white outline">
+                            <figure class="w-32">
+                                <img width="185" height="auto" src={media.poster_path ? imagesUrl + "w185" + media.poster_path : "https://placehold.co/185x274?text=No+Data"} alt={"poster-" + slugify(media.title || media.name) + "-" + media.id} class="w-full h-auto object-cover" transition:name={`poster-${slugify(media.title || media.name)}-${media.id}`} />
+                            </figure>
+                            <div class="text-center p-2">
+                            <h2 class="font-bold text-sm group-hover:underline group-hover:underline-offset-2 line-clamp-3" transition:name={`title-${slugify(media.title || media.name)}-${media.id}`}>{media.title || media.name}</h2>
+                            <p class="text-xs">{media?.release_date ? media.release_date.slice(0,4) : media.first_air_date.slice(0, 4)}</p>
+                            </div>
+                        </a>
+                    ))
+                }
+            </div>
+	    </section>
+    )
+}
