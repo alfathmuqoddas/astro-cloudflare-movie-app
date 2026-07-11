@@ -9,6 +9,7 @@ import Credits from "@/components/sections/movieDetails/Credits.astro";
 import Videos from "@/components/sections/movieDetails/Videos.astro";
 import Pictures from "@/components/sections/movieDetails/Pictures.astro";
 import Similar from "@/components/sections/movieDetails/Similar.astro";
+import NowPlayingSkeleton from "@/components/sections/home/NowPlayingSkeleton.astro";
 
 const { mediaType, slug } = Astro.params;
 
@@ -59,19 +60,19 @@ try {
         )}
         
         <Credits mediaType={mediaType} id={id} server:defer>
-            <p slot="fallback">Loading...</p>
+            <NowPlayingSkeleton slot="fallback" />
         </Credits>
 
         <Videos mediaType={mediaType} id={id} slug={slug} server:defer>
-            <p slot="fallback">Loading...</p>
+            <p class="max-md:mx-6" slot="fallback">Loading...</p>
         </Videos>
 
         <Pictures mediaType={mediaType} id={id} slug={slug} server:defer>
-            <p slot="fallback">Loading...</p>
+            <p class="max-md:mx-6" slot="fallback">Loading...</p>
         </Pictures>
 
         <Similar mediaType={mediaType} id={id} server:defer>
-            <p slot="fallback">Loading...</p>
+            <p class="max-md:mx-6" slot="fallback">Loading...</p>
         </Similar>
         
         </article>
