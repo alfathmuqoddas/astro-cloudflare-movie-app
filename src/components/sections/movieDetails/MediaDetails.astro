@@ -1,0 +1,74 @@
+---
+import {slugify, convertMinutesToHM, formatDateToMonthYear} from "@/lib/helper";
+import {imagesUrl} from "@/lib/constant";
+const { mediaDetails, slug, mediaType } = Astro.props;
+---
+<Fragment>
+    <section>
+        <figure class="h-120 relative overflow-hidden">
+            <img 
+                src={mediaDetails.backdrop_path ? imagesUrl + "w1280" + mediaDetails.backdrop_path : "https://placehold.co/1280x720?text=No+Data"}
+                alt={"backdrop-" + slugify(mediaDetails.title || mediaDetails.name)}
+                class="w-full h-full object-cover"
+                width="1280"
+                height="720"
+                transition:name={`backdrop-${slug}`}
+            />
+
+            <div class="absolute inset-0 bg-linear-to-t from-black/90 via-black/80 to-transparent flex flex-col justify-end p-6 md:p-4">
+                <div class="flex flex-col md:flex-row gap-6 items-center mx-auto h-full min-h-0 overflow-hidden">
+                    <figure class="shrink rounded-2xl border-2 border-white/10 overflow-hidden min-h-0 max-h-full">
+                        <img src={imagesUrl + "w185" + mediaDetails.poster_path} class="w-auto h-full object-contain" width="185" height="auto" alt={`poster-${slug}`} transition:name={`poster-${slug}`} />
+                    </figure>
+                    <div class="flex flex-col flex-1 min-h-0 overflow-y-auto gap-2">
+                        <div class="flex flex-wrap gap-1">
+                        {mediaDetails.genres.map((genre: any) => (
+                            <span class="text-xs uppercase text-white bg-zinc-600/60 rounded-full px-4 py-1">{genre.name}</span>
+                        ))}
+                        </div>
+                        <h1 class="text-white text-3xl md:text-5xl" transition:name={`title-${slug}`}>
+                            {mediaDetails.title || mediaDetails.name}
+                        </h1>
+                        <div class="flex gap-2 items-center flex-wrap">
+                            <span class="text-sm text-white rounded-full px-3 py-1 bg-zinc-500">
+                                📅 {mediaType === "tv" ? `${mediaDetails.first_air_date.slice(0, 4)} - ${mediaDetails.last_air_date.slice(0, 4)}` : formatDateToMonthYear(mediaDetails.release_date)}
+                            </span>
+                            <span class={`flex items-center gap-1 text-sm px-3 py-1 rounded-full
+                                ${mediaDetails.vote_average < 6 
+                                    ? "bg-red-400 text-black" 
+                                    : mediaDetails.vote_average < 7.5 
+                                        ? "bg-yellow-300 text-black" 
+                                        : mediaDetails.vote_average < 8.5 
+                                            ? "bg-green-300 text-black" 
+                                            : "bg-green-600 text-white"
+                                }
+                            `}>
+                                <span class="text-base">★</span> 
+                                {mediaDetails.vote_average.toFixed(1)}
+                            </span>
+                            {mediaType === "movie" && (
+                            <span class="text-sm text-black px-3 py-1 rounded-full bg-blue-300">
+                                ⏰ {convertMinutesToHM(mediaDetails.runtime)}
+                            </span>)}
+                            {mediaType === "tv" && (
+                                <span class="text-sm text-black px-3 py-1 rounded-full bg-blue-300">
+                                    {mediaDetails.number_of_seasons} Seasons
+                                </span>
+                            )}
+                            {mediaType === "tv" && (
+                                <a href={"/ratings/" + slugify(mediaDetails.name) + "-" + mediaDetails.external_ids.imdb_id} class="text-sm text-black px-3 py-1 rounded-full bg-blue-300">
+                                    See All Episodes Ratings
+                                </a>
+                            )}
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </figure>
+    </section>
+    <section class="max-md:mx-6">
+        <h1 class="text-2xl font-black">Overview</h1>
+        <p class="text-sm text-muted-foreground text-justify">{mediaDetails.overview}</p>
+    </section>
+</Fragment>
