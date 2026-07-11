@@ -1,0 +1,19 @@
+---
+---
+<div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 mt-2 border-t border-l">
+    {
+        Array.from({ length: 8 }).map((_) => (
+            <div class="p-2 bg-white shadow-[3px_3px_0px_rgba(0,0,0,1)] border-b border-r border-black flex items-center gap-2 animate-pulse">
+                <figure class="basis-1/4 grow-0">
+                <div class="bg-gray-300 w-full aspect-2/3 rounded"></div>
+                </figure>
+                <div class="basis-3/4 grow-0 space-y-1">
+                <div class="bg-gray-300 h-4 w-4 rounded"></div>
+                <div class="bg-gray-300 h-3 w-full rounded"></div>
+                <div class="bg-gray-300 h-3 w-3/4 rounded"></div>
+                <div class="bg-gray-300 h-3 w-1/2 rounded"></div>
+                </div>
+            </div>
+        ))
+    }
+</div>
