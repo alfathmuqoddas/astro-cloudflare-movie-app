@@ -24,11 +24,11 @@ try {
                 trendingTv.map((tv: any, index: number) => (
                     <a href={"/details/tv/" + slugify(tv.name) + "-" + tv.id} class="p-2 bg-white shadow-[3px_3px_0px_rgba(0,0,0,1)] border-b border-r border-black group flex items-center gap-2">
                         <figure class="basis-1/4 grow-0">
-                            <img width="185" height="auto" src={imagesUrl + "w185" + tv.poster_path} alt={"poster-" + slugify(tv.name)} class="w-full h-full object-cover" transition:name={`poster-${slugify(tv.name)}-${tv.id}`}/>
+                            <img width="185" height="auto" src={imagesUrl + "w185" + tv.poster_path} alt={"poster-" + slugify(tv.name)} class="w-full h-full object-cover"/>
                         </figure>
                         <div class="basis-3/4 grow-0">
                         <h2 class="font-mono">{index + 1}</h2>
-                        <h3 class="font-bold text-sm group-hover:underline group-hover:underline-offset-2" transition:name={`title-${slugify(tv.name)}-${tv.id}`}>{tv.name}</h3>
+                        <h3 class="font-bold text-sm group-hover:underline group-active:underline underline-offset-2">{tv.name}</h3>
                         <p class="text-xs">{tv.first_air_date.slice(0,4)}</p>
                         </div>
                     </a>

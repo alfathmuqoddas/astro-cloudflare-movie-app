@@ -55,13 +55,13 @@ const deathOrAge = ({birthday, deathday}: { birthday: string, deathday: string |
         <section class="px-6 md:px-0">
             <div class="flex items-center gap-4 max-w-lg mx-auto">
 						<figure class="basis-1/4 grow-0">
-							<img width="92" height="auto" src={celebDetails.profile_path ? imagesUrl + "w185" + celebDetails.profile_path : "https://placehold.co/92x138?text=No+Data"} alt={"poster-" + slug} class="w-full h-full object-cover" transition:name={`poster-${slug}`} />
+							<img width="92" height="auto" src={celebDetails.profile_path ? imagesUrl + "w185" + celebDetails.profile_path : "https://placehold.co/92x138?text=No+Data"} alt={"poster-" + slug} class="w-full h-full object-cover"/>
 						</figure>
 						<div class="basis-3/4 grow-0">
-						<h3 class="font-bold text-xl group-hover:underline group-hover:underline-offset-2 mb-2" transition:name={`name-${slug}`}>{celebDetails.name}</h3>
-                        <p>🎂 {formatDateToReadable(celebDetails.birthday)}</p>
-						<p>{deathOrAge({birthday: celebDetails.birthday, deathday: celebDetails.deathday})}</p>
-                        <p>🏠 {celebDetails.place_of_birth}</p>
+							<h3 class="font-bold text-xl group-hover:underline group-active:underline underline-offset-2 mb-2">{celebDetails.name}</h3>
+							<p>🎂 {formatDateToReadable(celebDetails.birthday)}</p>
+							<p>{deathOrAge({birthday: celebDetails.birthday, deathday: celebDetails.deathday})}</p>
+							<p>🏠 {celebDetails.place_of_birth}</p>
 						</div>
 					</div>
         </section>
@@ -72,12 +72,12 @@ const deathOrAge = ({birthday, deathday}: { birthday: string, deathday: string |
 				error.celebCombinedCredits ? <>Error fetching Celeb credits</> : movieCredits.lenght === 0 ? <>No Results</> : movieCredits.map((movie: any, index: number) => (
 					<a href={"/details/movie/" + slugify(movie.title) + "-" + movie.id} class="p-2 bg-white shadow-[3px_3px_0px_rgba(0,0,0,1)] border-b border-r border-black group flex items-center gap-2">
 						<figure class="basis-1/4 grow-0">
-							<img width="92" height="auto" src={movie.poster_path ? imagesUrl + "w92" + movie.poster_path : "https://placehold.co/92x138?text=No+Data"} alt={"poster-" + slugify(movie.title)} class="w-full h-full object-cover" transition:name={`poster-${slugify(movie.title)}-${movie.id}`}/>
+							<img width="92" height="auto" src={movie.poster_path ? imagesUrl + "w92" + movie.poster_path : "https://placehold.co/92x138?text=No+Data"} alt={"poster-" + slugify(movie.title)} class="w-full h-full object-cover"/>
 						</figure>
 						<div class="basis-3/4 grow-0">
-						<h3 class="font-bold text-sm group-hover:underline group-hover:underline-offset-2" transition:name={`title-${slugify(movie.title)}-${movie.id}`}>{movie.title}</h3>
-						<p class="text-xs">{movie.release_date.slice(0,4)}</p>
-                        <p class="text-sm mt-2">as {movie.character || "-"}</p>
+							<h3 class="font-bold text-sm group-hover:underline group-active:underline underline-offset-2">{movie.title}</h3>
+							<p class="text-xs">{movie.release_date.slice(0,4)}</p>
+							<p class="text-sm mt-2">as {movie.character || "-"}</p>
 						</div>
 					</a>
 				))
@@ -91,12 +91,12 @@ const deathOrAge = ({birthday, deathday}: { birthday: string, deathday: string |
 				error.celebCombinedCredits ? <>Error fetching Celeb credits</> : tvCredits.lenght === 0 ? <>No Results</> : tvCredits.map((tv: any) => (
 					<a href={"/details/tv/" + slugify(tv.name) + "-" + tv.id} class="p-2 bg-white shadow-[3px_3px_0px_rgba(0,0,0,1)] border-b border-r border-black group flex items-center gap-2">
 						<figure class="basis-1/4 grow-0">
-							<img width="92" height="auto" src={tv.poster_path ? imagesUrl + "w92" + tv.poster_path : "https://placehold.co/92x138?text=No+Data"} alt={"poster-" + slugify(tv.name)} class="w-full h-full object-cover" transition:name={`poster-${slugify(tv.name)}-${tv.id}`}/>
+							<img width="92" height="auto" src={tv.poster_path ? imagesUrl + "w92" + tv.poster_path : "https://placehold.co/92x138?text=No+Data"} alt={"poster-" + slugify(tv.name)} class="w-full h-full object-cover"/>
 						</figure>
 						<div class="basis-3/4 grow-0">
-						<h3 class="font-bold text-sm group-hover:underline group-hover:underline-offset-2" transition:name={`title-${slugify(tv.name)}-${tv.id}`}>{tv.name}</h3>
-						<p class="text-xs">{tv.first_air_date.slice(0,4)}</p>
-                        <p class="text-sm mt-2">as {tv.character || "-"}</p>
+							<h3 class="font-bold text-sm group-hover:underline group-active:underline underline-offset-2">{tv.name}</h3>
+							<p class="text-xs">{tv.first_air_date.slice(0,4)}</p>
+							<p class="text-sm mt-2">as {tv.character || "-"}</p>
 						</div>
 					</a>
 				))

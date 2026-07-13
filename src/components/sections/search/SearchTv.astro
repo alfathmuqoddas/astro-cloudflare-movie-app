@@ -26,10 +26,10 @@ try {
                 tvData.map((tv: any) => (
                     <a href={"/details/tv/" + slugify(tv.name) + "-" + tv.id} class="bg-white p-2 border-b border-r border-black group flex items-center gap-2">
                         <figure class="basis-1/6 md:basis-1/4 grow-0">
-                            <img width="92" height="auto" src={tv.poster_path ? imagesUrl + "w92" + tv.poster_path : "https://placehold.co/96x96?text=No+Data"} alt={"poster-" + slugify(tv.name)} class="w-full h-full object-cover" transition:name={`poster-${slugify(tv.name)}-${tv.id}`}/>
+                            <img width="92" height="auto" src={tv.poster_path ? imagesUrl + "w92" + tv.poster_path : "https://placehold.co/96x96?text=No+Data"} alt={"poster-" + slugify(tv.name)} class="w-full h-full object-cover"/>
                         </figure>
                         <div class="basis-5/6 md:basis-3/4 grow-0">
-                        <h3 class="font-bold text-sm group-hover:underline group-hover:underline-offset-2" transition:name={`title-${slugify(tv.name)}-${tv.id}`}>{tv.name}</h3>
+                        <h3 class="font-bold text-sm group-hover:underline group-active:underline underline-offset-2">{tv.name}</h3>
                         <p class="text-xs">{tv.first_air_date.slice(0,4)}</p>
                         </div>
                     </a>

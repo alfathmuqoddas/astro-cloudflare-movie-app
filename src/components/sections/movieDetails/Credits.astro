@@ -31,10 +31,10 @@ const importantCrews = credit?.crew?.filter((crew: any) => crew.job === "Directo
                             credit.cast.map((cast: any) => (
                                 <a href={"/celebrity/" + slugify(cast.name) + "-" + cast.id} class="w-28 flex flex-col group outline shadow-[3px_3px_0px_rgba(0,0,0,1)] bg-white" title={cast.name}>
                                     <figure class="w-28">
-                                        <img loading="lazy" alt={`cast-pics-${slugify(cast.name)}-${cast.id}`} src={cast.profile_path ? imagesUrl + "w185" + cast.profile_path : "https://placehold.co/96x96?text=No+Data"} class="w-full aspect-square object-cover" width="185" height="auto" transition:name={`poster-${slugify(cast.name)}-${cast.id}`}/>
+                                        <img loading="lazy" alt={`cast-pics-${slugify(cast.name)}-${cast.id}`} src={cast.profile_path ? imagesUrl + "w185" + cast.profile_path : "https://placehold.co/96x96?text=No+Data"} class="w-full aspect-square object-cover" width="185" height="auto"/>
                                     </figure>
                                     <div class="p-2">
-                                        <h2 class="font-bold text-sm group-hover:underline group-hover:underline-offset-2" transition:name={`name-${slugify(cast.name)}-${cast.id}`}>{cast.name}</h2>
+                                        <h2 class="font-bold text-sm group-hover:underline group-active:underline underline-offset-2">{cast.name}</h2>
                                         <p class="text-xs">{cast.character}</p>
                                     </div>
                                 </a>
@@ -52,7 +52,7 @@ const importantCrews = credit?.crew?.filter((crew: any) => crew.job === "Directo
                                         <img loading="lazy" alt={`crew-pics-${slugify(cast.name)}-${cast.id}`} src={cast.profile_path ? imagesUrl + "w185" + cast.profile_path : "https://placehold.co/96x96?text=No+Data"} class="w-full aspect-square object-cover" width="185" height="auto" />
                                     </figure>
                                     <div class="p-2">
-                                        <h2 class="font-bold text-sm group-hover:underline group-hover:underline-offset-2">{cast.name}</h2>
+                                        <h2 class="font-bold text-sm group-hover:underline group-active:underline underline-offset-2">{cast.name}</h2>
                                         <p class="text-xs">{cast.job}</p>
                                     </div>
                                 </div>

@@ -26,10 +26,10 @@ try {
                     similar.map((media: any) => (
                         <a href={"/details/" + mediaType + "/" + slugify(media.title || media.name) + "-" + media.id} title={media.title || media.name} class="group shadow-[3px_3px_0px_rgba(0,0,0,1)] bg-white outline">
                             <figure class="w-32">
-                                <img width="185" height="auto" src={media.poster_path ? imagesUrl + "w185" + media.poster_path : "https://placehold.co/185x274?text=No+Data"} alt={"poster-" + slugify(media.title || media.name) + "-" + media.id} class="w-full h-auto object-cover" transition:name={`poster-${slugify(media.title || media.name)}-${media.id}`} />
+                                <img width="185" height="auto" src={media.poster_path ? imagesUrl + "w185" + media.poster_path : "https://placehold.co/185x274?text=No+Data"} alt={"poster-" + slugify(media.title || media.name) + "-" + media.id} class="w-full h-auto object-cover" />
                             </figure>
                             <div class="text-center p-2">
-                            <h2 class="font-bold text-sm group-hover:underline group-hover:underline-offset-2 line-clamp-3" transition:name={`title-${slugify(media.title || media.name)}-${media.id}`}>{media.title || media.name}</h2>
+                            <h2 class="font-bold text-sm group-hover:underline group-active:underline underline-offset-2 line-clamp-3">{media.title || media.name}</h2>
                             <p class="text-xs">{media?.release_date ? media.release_date.slice(0,4) : media.first_air_date.slice(0, 4)}</p>
                             </div>
                         </a>
