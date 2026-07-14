@@ -1,0 +1,14 @@
+---
+import SidebarNPMovies from "./SidebarNPMovies.astro";
+import SidebarNPTv from "./SidebarOATv.astro";
+import SidebarSkeleton from "./SidebarSkeleton.astro";
+---
+<aside class="hidden bg-white md:block w-1/4 sticky top-12 bottom-8 border shadow-[3px_3px_0px_rgba(0,0,0,1)]">
+    <h1 class="text-lg font-bold border-b p-2">What to watch</h1>
+    <SidebarNPMovies server:defer>
+        <SidebarSkeleton slot="fallback" />
+    </SidebarNPMovies>
+    <SidebarNPTv server:defer>
+        <SidebarSkeleton slot="fallback" />
+    </SidebarNPTv>
+</aside>

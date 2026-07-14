@@ -1,0 +1,41 @@
+---
+import {getOnTheAir} from "@/lib/getData";
+
+let onTheAirData = [];
+let error = null
+
+try {
+    onTheAirData = await getOnTheAir();
+} catch (e: any) {
+    console.error(e.message);
+    error = e.message
+}
+---
+<div class="p-2">
+    <div class="mb-1">
+    <h2 class="font-bold">Tv Shows</h2>
+    <p class="text-xs">Currenly airing</p>
+    </div>
+    {error ? <>Error fetching On The Air data</> : (
+        <div class="flex flex-col">
+            {onTheAirData.slice(0,10).map((tv: any) => (
+                <div class="flex gap-1 text-sm items-center flex-wrap">
+                    <a href={"/details/tv/" + tv.id} class="hover:underline active:underline">{tv.name}</a>
+                    <span class={`flex items-center gap-1 text-sm
+                        ${tv.vote_average < 6 
+                            ? "text-red-400" 
+                            : tv.vote_average < 7.5 
+                                ? "text-yellow-300" 
+                                : tv.vote_average < 8.5 
+                                    ? " text-green-300" 
+                                    : " text-green-600"
+                        }
+                    `}>
+                        <span class="text-base">★</span> 
+                        {tv.vote_average.toFixed(1)}
+                    </span>
+                </div>
+            ))}
+        </div>
+    )}
+</div>

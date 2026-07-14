@@ -1,0 +1,41 @@
+---
+import {getNowPlayingData} from "@/lib/getData";
+
+let nowPlayingData = [];
+let error = null
+
+try {
+    nowPlayingData = await getNowPlayingData();
+} catch (e: any) {
+    console.error(e.message);
+    error = e.message
+}
+---
+<div class="p-2 border-b">
+    <h2 class="font-bold">
+        In Theaters
+    </h2>
+    {error ? <>Error fetching Now Playing data</> : (
+        <div class="flex flex-col">
+            {nowPlayingData.slice(0,10).map((movie: any) => (
+                <div class="flex gap-1 text-sm items-center flex-wrap">
+                    <a href={"/details/movie/" + movie.id} class="hover:underline active:underline">{movie.title || movie.name}</a>
+                    <span class={`flex items-center gap-1 text-sm
+                        ${movie.vote_average < 6 
+                            ? "text-red-400" 
+                            : movie.vote_average < 7.5 
+                                ? "text-yellow-300" 
+                                : movie.vote_average < 8.5 
+                                    ? " text-green-300" 
+                                    : " text-green-600"
+                        }
+                    `}>
+                        <span class="text-base">★</span> 
+                        {movie.vote_average.toFixed(1)}
+                    </span>
+                </div>
+            ))}
+        </div>
+    )}
+
+</div>

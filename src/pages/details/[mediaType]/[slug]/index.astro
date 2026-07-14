@@ -4,12 +4,14 @@ import MainLayout from "@/layout/MainLayout.astro";
 import { getMediaDetails  } from "@/lib/getData";
 import {imagesUrl} from "@/lib/constant";
 import {extractSlug} from "@/lib/helper";
-import MediaDetails from "@/components/sections/movieDetails/MediaDetails.astro";
+import Hero from "@/components/sections/movieDetails/Hero.astro";
 import Credits from "@/components/sections/movieDetails/Credits.astro";
 import Videos from "@/components/sections/movieDetails/Videos.astro";
 import Pictures from "@/components/sections/movieDetails/Pictures.astro";
 import Similar from "@/components/sections/movieDetails/Similar.astro";
 import NowPlayingSkeleton from "@/components/sections/home/NowPlayingSkeleton.astro";
+import Sidebar from "@/components/sections/movieDetails/Sidebar.astro";
+import Overview from "@/components/sections/movieDetails/Overview.astro";
 
 const { mediaType, slug } = Astro.params;
 
@@ -53,28 +55,36 @@ try {
         <meta name="twitter:url" content={Astro.url.href} slot="head"/>
     </Fragment>
     <MainLayout>
-        <article class="flex flex-col gap-8 pb-8">
         
         {error ? <>Error fetching media details</> : (
-            <MediaDetails mediaDetails={mediaDetails} slug={slug} mediaType={mediaType} />
+            <Hero mediaDetails={mediaDetails} slug={slug} mediaType={mediaType} />
         )}
+
+        <div class="flex gap-8 items-start">
         
-        <Credits mediaType={mediaType} id={id} server:defer>
-            <NowPlayingSkeleton slot="fallback" />
-        </Credits>
+            <article class="flex w-full md:w-3/4 flex-col gap-8 pb-8">
 
-        <Videos mediaType={mediaType} id={id} slug={slug} server:defer>
-            <p class="max-md:mx-6" slot="fallback">Loading...</p>
-        </Videos>
+                <Overview overview={mediaDetails.overview} />
+                
+                <Credits mediaType={mediaType} id={id} server:defer>
+                    <NowPlayingSkeleton slot="fallback" />
+                </Credits>
 
-        <Pictures mediaType={mediaType} id={id} slug={slug} server:defer>
-            <p class="max-md:mx-6" slot="fallback">Loading...</p>
-        </Pictures>
+                <Videos mediaType={mediaType} id={id} slug={slug} server:defer>
+                    <p class="max-md:mx-6" slot="fallback">Loading...</p>
+                </Videos>
 
-        <Similar mediaType={mediaType} id={id} server:defer>
-            <p class="max-md:mx-6" slot="fallback">Loading...</p>
-        </Similar>
-        
-        </article>
+                <Pictures mediaType={mediaType} id={id} slug={slug} server:defer>
+                    <p class="max-md:mx-6" slot="fallback">Loading...</p>
+                </Pictures>
+
+                <Similar mediaType={mediaType} id={id} server:defer>
+                    <p class="max-md:mx-6" slot="fallback">Loading...</p>
+                </Similar>
+            
+            </article>
+
+            <Sidebar />
+        </div>
     </MainLayout>
 </AppLayout>
