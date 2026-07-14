@@ -4,16 +4,16 @@ const { searchParams } = Astro.url;
 const query = searchParams.get("query") || "";
 ---
 <form action="/search" method="GET">
-  <div class="flex gap-1 border rounded-lg border-zinc-200 bg-white items-center max-w-48">
+  <div class="flex gap-1 border rounded-lg border-zinc-200 bg-white items-center max-w-36">
     <input 
       type="text" 
       name="query"
       placeholder="Search movies..." 
-      class="text-black px-2 py-1 w-full"
+      class="text-black text-xs pl-2 p-1 w-full"
       value={query}
       required
     />
-    <button type="submit" class="pr-2">
+    <button type="submit" class="text-sm pr-1">
       🔍
     </button>
   </div>
