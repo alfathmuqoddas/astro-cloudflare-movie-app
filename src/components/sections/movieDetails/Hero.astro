@@ -3,9 +3,8 @@ import {slugify, convertMinutesToHM, formatDateToMonthYear} from "@/lib/helper";
 import {imagesUrl} from "@/lib/constant";
 const { mediaDetails, slug, mediaType } = Astro.props;
 ---
-<Fragment>
     <section>
-        <figure class="h-120 relative overflow-hidden">
+        <figure class="h-120 relative mb-8 overflow-hidden">
             <img 
                 src={mediaDetails.backdrop_path ? imagesUrl + "w1280" + mediaDetails.backdrop_path : "https://placehold.co/1280x720?text=No+Data"}
                 alt={"backdrop-" + slugify(mediaDetails.title || mediaDetails.name)}
@@ -66,8 +65,3 @@ const { mediaDetails, slug, mediaType } = Astro.props;
             </div>
         </figure>
     </section>
-    <section class="max-md:mx-6">
-        <h1 class="text-2xl font-black">Overview</h1>
-        <p class="text-sm text-muted-foreground text-justify">{mediaDetails.overview}</p>
-    </section>
-</Fragment>
