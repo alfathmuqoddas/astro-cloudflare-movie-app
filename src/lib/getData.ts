@@ -210,3 +210,14 @@ export const getSeasons = async (id: string) => {
   const { seasons } = await res.json();
   return seasons;
 };
+
+export const getOnTheAir = async () => {
+  const res = await fetch(
+    `https://api.themoviedb.org/3/tv/on_the_air?api_key=${API_KEY}&language=en-US`,
+  );
+  if (!res.ok) {
+    throw new Error("Failed to fetch on the air data");
+  }
+  const { results } = await res.json();
+  return results;
+};
