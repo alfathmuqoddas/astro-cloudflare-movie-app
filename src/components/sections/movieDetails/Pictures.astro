@@ -22,9 +22,9 @@ try {
             <h1 class="text-2xl font-black max-md:mx-6">Pictures</h1>
             <div class="max-w-6xl overflow-auto flex gap-2 py-2 px-6 md:px-0">
                 {
-                    pics?.posters?.map((pic: any, index: number) => (
+                    pics?.backdrops?.map((pic: any, index: number) => (
                         <a class="flex flex-col gap-2 group cursor-pointer" href={imagesUrl + "w185" + pic.file_path}>
-                            <figure class="w-32">
+                            <figure class="w-64">
                                 <img 
                                     loading="lazy" 
                                     src={imagesUrl + "w185" + pic.file_path} 
