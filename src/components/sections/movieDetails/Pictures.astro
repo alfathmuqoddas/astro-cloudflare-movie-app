@@ -13,6 +13,18 @@ try {
     console.error(e.message);
     error = e.message
 }
+
+const posterWidth = ["w92",
+      "w154",
+      "w185",
+      "w342",
+      "w500",
+      "w780",
+      "original"]
+const backdropWidth = [ "w300",
+      "w780",
+      "w1280",
+      "original"]
 ---
 {
     error ? (
@@ -23,14 +35,14 @@ try {
             <div class="max-w-6xl overflow-auto flex gap-2 py-2 px-6 md:px-0">
                 {
                     pics?.backdrops?.map((pic: any, index: number) => (
-                        <a class="flex flex-col gap-2 group cursor-pointer" href={imagesUrl + "w185" + pic.file_path}>
+                        <a class="flex flex-col gap-2 group cursor-pointer" href={imagesUrl + backdropWidth[0] + pic.file_path}>
                             <figure class="w-64">
                                 <img 
                                     loading="lazy" 
-                                    src={imagesUrl + "w185" + pic.file_path} 
+                                    src={imagesUrl + backdropWidth[0] + pic.file_path} 
                                     class="w-full h-full object-cover" 
                                     alt={"pics-" + slug + "-" + index}
-                                    width="185"
+                                    width="300"
                                     height="auto"
                                 />
                             </figure>
